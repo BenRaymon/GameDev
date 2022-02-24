@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb2d;
     private BoxCollider2D playerCollider;
+    private float extraHeightTest = 0.02f;
     private float moveSpeed = 2f;
     private float jumpForce = 30f;
     private float horizontalMovement;
@@ -29,6 +30,9 @@ public class PlayerMovement : MonoBehaviour
         verticalMovement = Input.GetAxisRaw("Vertical");
 
         updatePlayerState();
+
+        if(playerState == characterState.falling)
+            attackEnemy();
     }
 
     void FixedUpdate()
@@ -48,12 +52,27 @@ public class PlayerMovement : MonoBehaviour
         // Tests if a player is grounded by casting a ray and checking if the ray is colliding with any existing colliders.
         // 'Queries start in colliders' is disabled in Project Settings -> Physics2D in order for raycast to ignore its own collider.
 
-        float extraHeightTest = 0.015f;
-
         // Casts a ray from the center-bottom of the player's box collider
-        RaycastHit2D rayCastTest = Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + extraHeightTest);
+        RaycastHit2D rayCastGroundTest = Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + extraHeightTest);
 
-        return rayCastTest;
+        return rayCastGroundTest;
+    }
+
+    // 
+    // Uses the same raycast as isGrounded. Retrieves whatever gameobject collides with the raycast and checks if it is an enemy.
+    // If it is an enemy, get the enemycontroller script component of that gameobject and calls the function takeDamage.
+    //
+    private void attackEnemy()
+    {
+        RaycastHit2D rayCastEnemyAttack = Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + extraHeightTest);
+
+        GameObject objectHit = rayCastEnemyAttack.collider.gameObject;
+
+        if(objectHit.tag == "Enemy")
+        {
+            objectHit.GetComponent<EnemyController>().takeDamage(100);
+        }
+
     }
 
     private void updatePlayerState()
