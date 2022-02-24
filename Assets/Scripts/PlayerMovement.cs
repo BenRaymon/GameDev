@@ -4,23 +4,31 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D playerBody;
+    private Rigidbody2D rb2d;
     private BoxCollider2D playerCollider;
+    private float moveSpeed = 2f;
+    private float jumpForce = 30f;
+    private float horizontalMovement;
+    private float verticalMovement;
 
     void Start()
     {
-        playerBody = GetComponent<Rigidbody2D>();
+        rb2d = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
     {
-
+        horizontalMovement = Input.GetAxisRaw("Horizontal");
+        verticalMovement = Input.GetAxisRaw("Vertical");
     }
 
     void FixedUpdate()
     {
-
+        if(horizontalMovement > .1f || horizontalMovement < -.1f)
+            rb2d.AddForce(new Vector2(horizontalMovement * moveSpeed, 0f), ForceMode2D.Impulse);
+        if(verticalMovement > .1f && isGrounded())
+            rb2d.AddForce(new Vector2(0f, verticalMovement * jumpForce), ForceMode2D.Impulse);
     }
 
     private bool isGrounded()
