@@ -46,7 +46,6 @@ public class IMPORTED_PlayerMovement : MonoBehaviour
     * 
     * 1. Horizontal movement generates y velocity (negative when moving left and positive when moving right)
     *       Unknown cause -- Idle animation could be cause
-    *       This prevents jumping as it requires a positive y velocity > .1f
     *
     * 2. Idle animation generates velocity
     *       Unknown cause -- Could be caused by collider moving?
@@ -55,7 +54,9 @@ public class IMPORTED_PlayerMovement : MonoBehaviour
     * 3. Infinite loop where the animation switches between falling and idle.
     *       Unknown cause
     *
-    *
+    * 4. At times, when the player is idle, jumping does not work. The animation plays the first frame and then immediately
+    *    switches back to the idle animation with no significant change in y velocity.
+    *       Unknown cause
     *
     */
 
