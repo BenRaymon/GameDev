@@ -66,9 +66,9 @@ public class PlayerMovement : MonoBehaviour
     {
         RaycastHit2D rayCastEnemyAttack = Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + extraHeightTest);
 
-        GameObject objectHit = rayCastEnemyAttack.collider.gameObject;
+        GameObject objectHit = rayCastEnemyAttack.collider?.gameObject;
 
-        if(objectHit.tag == "Enemy")
+        if(objectHit && objectHit.tag == "Enemy")
         {
             objectHit.GetComponent<EnemyController>().takeDamage(100);
         }
