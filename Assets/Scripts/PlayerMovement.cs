@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     private float jumpForce = 30f;
     private float horizontalMovement;
     private float verticalMovement;
+    private float chargeJump = 0f;
+    private bool jumpNow = false;
     
     // Currently used for debugging purposes
     private enum characterState {idle, running, jumping, falling}
@@ -27,7 +30,22 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
-        verticalMovement = Input.GetAxisRaw("Vertical");
+        
+        // Testing Charge Jump
+        //
+        // verticalMovement = Input.GetAxisRaw("Vertical");
+
+        if(Input.GetKey(KeyCode.Space))
+        {
+            chargeJump += Time.deltaTime;
+        }
+
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            jumpNow = true;
+            CinemachineCameraShake.Instance.shakeCamera(0f);
+        }
+
 
         updatePlayerState();
 
@@ -41,10 +59,21 @@ public class PlayerMovement : MonoBehaviour
         {
             rb2d.AddForce(new Vector2(horizontalMovement * moveSpeed, 0f), ForceMode2D.Impulse);
         }
-        if(verticalMovement > .1f && isGrounded())
+
+        if(jumpNow)
         {
-            rb2d.AddForce(new Vector2(0f, verticalMovement * jumpForce), ForceMode2D.Impulse);
+            rb2d.AddForce(new Vector2(0f, chargeJump * jumpForce), ForceMode2D.Impulse);
+
+            jumpNow = false;
+            chargeJump = 0f;
         }
+
+        // Testing charge jump
+        //
+        // if(verticalMovement > .1f && isGrounded())
+        // {
+        //     rb2d.AddForce(new Vector2(0f, verticalMovement * jumpForce), ForceMode2D.Impulse);
+        // }
     }
 
     private bool isGrounded()
@@ -88,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
             playerStateText.text = "idle";
         }
         
-        if(verticalMovement > .1f)
+        if(rb2d.velocity.y > .1f)
         {
             playerState = characterState.jumping;
             playerStateText.text = "jumping";
