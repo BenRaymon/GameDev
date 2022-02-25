@@ -12,6 +12,18 @@ The player can sometimes get stuck in the running state.
     After landing there, movement in any direction will cause the player to become stuck in the running state while still on the enemy.
     CAUSE: The player has a x-velocity of +- 1.4 with intermitently changing y velocity when moving ontop of the enemy.
 
+    EDIT: there were two main causes for the error described above
+      1. The idle state is not updating because of floating point imprecision
+      it is generally considered bad practice to compare floats using equlality (x == 0) 
+      because a float may print as 0 and look like 0 but may not be exactly zero (0.00000001)
+      FIX: The "best practice" would be to use approximation, in C# that would be by using Mathf.Approximately(x, y)
+
+      2. raycasting from the center causing a player to hang on to the edge of an enemy
+      when a ray is cast from the center of the player, it doesn't consider the left and right boundaries
+      so if a player lands halfway on an enemy (just clipping the side of the enemy)
+      it won't register that as a collision.
+      FIX: cast a ray from the left and from the right of the player
+
 */
 
 /**
@@ -94,15 +106,30 @@ public class PlayerMovement : MonoBehaviour
     //
     private void attackEnemy()
     {
-        RaycastHit2D rayCastEnemyAttack = Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + extraHeightTest);
-
-        GameObject objectHit = rayCastEnemyAttack.collider?.gameObject;
-
-        if(objectHit && objectHit.tag == "Enemy")
-        {
-            objectHit.GetComponent<EnemyController>().takeDamage(100);
+        //Check for collision on the left side of the player
+        GameObject collisionLeft = collisionDetector(playerCollider.bounds.min, Vector2.down, extraHeightTest);
+        //Check for collision on the right side of the player
+        GameObject collisionRight = collisionDetector(new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.min.y), Vector2.down, extraHeightTest);
+        
+        if(collisionLeft && collisionLeft.tag == "Enemy"){
+            collisionLeft.GetComponent<EnemyController>().takeDamage(100);
+        }
+        else if(collisionRight && collisionRight.tag == "Enemy"){
+            collisionRight.GetComponent<EnemyController>().takeDamage(100);
         }
 
+    }
+
+    //This function takes in 
+    //  an origin vector (the starting position of the ray)
+    //  a direction vector (the direction to cast the ray)
+    //  a distance float (the distance to cast the ray)
+    //The function returns the object hit by the ray (or null if no object is hit)  
+    private GameObject collisionDetector(Vector2 origin, Vector2 direction, float distance){
+        RaycastHit2D rayCast = Physics2D.Raycast(origin, direction, distance);
+        GameObject objectHit = rayCast.collider?.gameObject;
+
+        return objectHit;
     }
 
     private void updatePlayerState()
@@ -112,7 +139,7 @@ public class PlayerMovement : MonoBehaviour
             playerState = characterState.running;
             playerStateText.text = "running";
         }
-        else if(rb2d.velocity.x == 0f && rb2d.velocity.y == 0f)
+        else if(Mathf.Approximately(rb2d.velocity.x, 0f) && Mathf.Approximately(rb2d.velocity.y, 0f))
         {
             playerState = characterState.idle;
             playerStateText.text = "idle";
