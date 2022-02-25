@@ -2,30 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-/**
-
-BUGS
-
-The player can sometimes get stuck in the running state.
-    Seen when the player jumps ontop of an enemy without triggering the collision check (landing at the top corners of the enemy).
-    After landing there, movement in any direction will cause the player to become stuck in the running state while still on the enemy.
-    CAUSE: The player has a x-velocity of +- 1.4 with intermitently changing y velocity when moving ontop of the enemy.
-
-    EDIT: there were two main causes for the error described above
-      1. The idle state is not updating because of floating point imprecision
-      it is generally considered bad practice to compare floats using equlality (x == 0) 
-      because a float may print as 0 and look like 0 but may not be exactly zero (0.00000001)
-      FIX: The "best practice" would be to use approximation, in C# that would be by using Mathf.Approximately(x, y)
-
-      2. raycasting from the center causing a player to hang on to the edge of an enemy
-      when a ray is cast from the center of the player, it doesn't consider the left and right boundaries
-      so if a player lands halfway on an enemy (just clipping the side of the enemy)
-      it won't register that as a collision.
-      FIX: cast a ray from the left and from the right of the player
-
-*/
-
 /**
 
 TODO
@@ -34,13 +10,15 @@ TODO
 
 */
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb2d;
     private BoxCollider2D playerCollider;
     private Animator playerAnimator;
     private SpriteRenderer playerSprite;
     private float extraHeightTest = 0.02f;
+    private float timeBeforeFall = 0.08f;
+    private float timeBeforeFallDelta;
     private float moveSpeed = 2f;
     private float jumpForce = 50f;
     private float horizontalMovement;
@@ -58,6 +36,8 @@ public class PlayerMovement : MonoBehaviour
         playerStateText = GetComponentInChildren<TextMesh>();
         playerAnimator = GetComponent<Animator>();
         playerSprite = GetComponent<SpriteRenderer>();
+
+        timeBeforeFallDelta = timeBeforeFall;
     }
 
     void Update()
@@ -102,8 +82,6 @@ public class PlayerMovement : MonoBehaviour
     // Uses the same raycast as isGrounded. Retrieves whatever gameobject collides with the raycast and checks if it is an enemy.
     // If it is an enemy, get the enemycontroller script component of that gameobject and calls the function takeDamage.
     //
-    // <QUESTION> Should this be moved to a separate script attached to the player?
-    //
     private void attackEnemy()
     {
         //Check for collision on the left side of the player
@@ -134,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void updatePlayerState()
     {
-        if(horizontalMovement > .1f || horizontalMovement < -.1f)
+        if((horizontalMovement > .1f || horizontalMovement < -.1f) && Mathf.Approximately(rb2d.velocity.y, 0f))
         {        
             playerState = characterState.running;
             playerStateText.text = "running";
@@ -153,9 +131,17 @@ public class PlayerMovement : MonoBehaviour
         
         if(rb2d.velocity.y < -.1f)
         {
-            playerState = characterState.falling;
-            playerStateText.text = "falling";
+            if(timeBeforeFallDelta >= 0f)
+                timeBeforeFallDelta -= Time.deltaTime;
+            else
+            {
+                playerState = characterState.falling;
+                playerStateText.text = "falling";
+            }
         }
+
+        if(playerState != characterState.falling && playerState != characterState.jumping)
+            timeBeforeFallDelta = timeBeforeFall;
 
         playerAnimator.SetInteger("state", (int)playerState);
     }
