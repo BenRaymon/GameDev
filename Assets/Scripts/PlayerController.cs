@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private float timeBeforeFallDelta;
     private float moveSpeed = 2f;
     private float jumpForce = 50f;
+    private int playerHealth = 100;
     private float horizontalMovement;
     private float verticalMovement;
     
@@ -96,6 +97,13 @@ public class PlayerController : MonoBehaviour
             collisionRight.GetComponent<EnemyController>().takeDamage(100);
         }
 
+    }
+
+    public void damagePlayer(int damage)
+    {
+        playerHealth -= damage;
+        if(playerHealth <= 0)
+            Destroy(this.gameObject);
     }
 
     //This function takes in 
