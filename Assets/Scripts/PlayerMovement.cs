@@ -2,6 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/**
+
+BUGS
+
+The player can sometimes get stuck in the running state.
+    Seen when the player jumps ontop of an enemy without triggering the collision check (landing at the top corners of the enemy).
+    After landing there, movement in any direction will cause the player to become stuck in the running state while still on the enemy.
+    CAUSE: The player has a x-velocity of +- 1.4 with intermitently changing y velocity when moving ontop of the enemy.
+
+*/
+
+/**
+
+TODO
+
+1. Add a delay to jumping
+
+*/
+
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb2d;
@@ -10,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer playerSprite;
     private float extraHeightTest = 0.02f;
     private float moveSpeed = 2f;
-    private float jumpForce = 30f;
+    private float jumpForce = 50f;
     private float horizontalMovement;
     private float verticalMovement;
     
@@ -70,6 +90,8 @@ public class PlayerMovement : MonoBehaviour
     // Uses the same raycast as isGrounded. Retrieves whatever gameobject collides with the raycast and checks if it is an enemy.
     // If it is an enemy, get the enemycontroller script component of that gameobject and calls the function takeDamage.
     //
+    // <QUESTION> Should this be moved to a separate script attached to the player?
+    //
     private void attackEnemy()
     {
         RaycastHit2D rayCastEnemyAttack = Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + extraHeightTest);
@@ -90,13 +112,13 @@ public class PlayerMovement : MonoBehaviour
             playerState = characterState.running;
             playerStateText.text = "running";
         }
-        else
+        else if(rb2d.velocity.x == 0f && rb2d.velocity.y == 0f)
         {
             playerState = characterState.idle;
             playerStateText.text = "idle";
         }
         
-        if(verticalMovement > .1f)
+        if(rb2d.velocity.y > .1f)
         {
             playerState = characterState.jumping;
             playerStateText.text = "jumping";
