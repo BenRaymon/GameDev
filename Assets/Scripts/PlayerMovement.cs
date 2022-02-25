@@ -6,6 +6,8 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb2d;
     private BoxCollider2D playerCollider;
+    private Animator playerAnimator;
+    private SpriteRenderer playerSprite;
     private float extraHeightTest = 0.02f;
     private float moveSpeed = 2f;
     private float jumpForce = 30f;
@@ -22,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<BoxCollider2D>();
         playerStateText = GetComponentInChildren<TextMesh>();
+        playerAnimator = GetComponent<Animator>();
+        playerSprite = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -39,6 +43,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if(horizontalMovement > .1f || horizontalMovement < -.1f)
         {
+            if(horizontalMovement > .1f)
+                playerSprite.flipX = false;
+            else if(horizontalMovement < -.1f)
+                playerSprite.flipX = true;
             rb2d.AddForce(new Vector2(horizontalMovement * moveSpeed, 0f), ForceMode2D.Impulse);
         }
         if(verticalMovement > .1f && isGrounded())
@@ -99,5 +107,7 @@ public class PlayerMovement : MonoBehaviour
             playerState = characterState.falling;
             playerStateText.text = "falling";
         }
+
+        playerAnimator.SetInteger("state", (int)playerState);
     }
 }
