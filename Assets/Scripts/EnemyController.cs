@@ -6,8 +6,6 @@ TODO
     1. Create and add enemy attack animation
     2. Improve enemy movement
         NOTE: using velocity is too slow, addforce can sometimes lead to enemies shooting off into the distance
-    3. Find a way to get prefabbed dinosaurs to spawn with player object set
-
 */
 public class EnemyController : MonoBehaviour
 {
@@ -15,7 +13,7 @@ public class EnemyController : MonoBehaviour
     public float chaseDistance;
     public float enemySpeed;
 
-    public GameObject player;
+    private GameObject player;
     private Transform playerLocation;
     private Rigidbody2D rb2d;
     private Animator enemyAnimator;
@@ -25,6 +23,7 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
+        player = GameObject.FindWithTag("Player");
         rb2d = GetComponent<Rigidbody2D>();
         playerLocation = player.GetComponent<Transform>();
         enemyAnimator = GetComponent<Animator>();
