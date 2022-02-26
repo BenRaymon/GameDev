@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /**
@@ -7,8 +5,8 @@ using UnityEngine;
 TODO
 
 1. Add a delay to jumping
-2. Add charged jumping
-    2a. Change attackEnemy() to use Physics2D.OverlapCircle to simulate AOE damage from landing
+2. Change attackEnemy() to use Physics2D.OverlapCircle to simulate AOE damage from landing
+    2a. Possibly change regular jumping to quick jump and reduce damage done. Increase damage for charged jumps.
 3. Add damage animations
 4. Modify jump animation to support charged jumping
 
@@ -16,23 +14,37 @@ TODO
 
 public class PlayerController : MonoBehaviour
 {
+    // GetComponent Setup
     private Rigidbody2D rb2d;
     private BoxCollider2D playerCollider;
     private Animator playerAnimator;
     private SpriteRenderer playerSprite;
+
+    // Used for isGround() to extend raycast further from the player
     private float extraHeightTest = 0.02f;
+
+    // Setup a timer before entering fall state
     private float timeBeforeFall = 0.08f;
     private float timeBeforeFallDelta;
+
+    // General player stats
     private float moveSpeed = 2f;
     private float jumpForce = 40f;
     private int playerHealth = 100;
+
+    // Setup for charged jumping
     private float jumpChargeForce = 0f;
-    private float chargedJumpTimer = 2f;
+    private float maxChargeTime = 2f;
+    private float chargedJumpTimerDelta;
     private float chargedCameraShakeIntensity = 0f;
     private bool chargedJump = false;
     private bool charging = false;
+
+    // Setup for registering movement
     private float horizontalMovement;
     private float verticalMovement;
+
+    // Setup for player state management
     private enum characterState {idle, running, jumping, falling, chargingJump}
     // Can be repurposed to display player health later
     private TextMesh playerStateText;
@@ -47,6 +59,7 @@ public class PlayerController : MonoBehaviour
         playerSprite = GetComponent<SpriteRenderer>();
 
         timeBeforeFallDelta = timeBeforeFall;
+        chargedJumpTimerDelta = maxChargeTime;
     }
 
     void Update()
@@ -57,11 +70,11 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKey(KeyCode.Space) && isGrounded())
         {
             charging = true;
-            if(chargedJumpTimer > 0f)
+            if(chargedJumpTimerDelta > 0f)
             {
                 chargedCameraShakeIntensity += Time.deltaTime;
                 jumpChargeForce += Time.deltaTime;
-                chargedJumpTimer -= Time.deltaTime;
+                chargedJumpTimerDelta -= Time.deltaTime;
                 CinemachineCameraShake.Instance.shakeCamera(chargedCameraShakeIntensity, .1f);
             }
             else
@@ -70,6 +83,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         
+        // Used to detect early release of space bar.
         if(Input.GetKeyUp(KeyCode.Space) && charging)
         {
             chargedJump = true;
@@ -101,9 +115,11 @@ public class PlayerController : MonoBehaviour
             float newJumpForce = jumpForce * jumpChargeForce;
             rb2d.AddForce(new Vector2(0f, newJumpForce), ForceMode2D.Impulse);
 
+            // Reset values for charged jump.
+            // Are there any better ways to do this?
             chargedJump = false;
             jumpChargeForce = 0f;
-            chargedJumpTimer = 2f;
+            chargedJumpTimerDelta = maxChargeTime;
             charging = false;
             chargedCameraShakeIntensity = 0f;
         }
