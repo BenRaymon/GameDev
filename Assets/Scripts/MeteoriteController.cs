@@ -1,19 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+/**
+
+TODO
+
+    1. Change collision detection from ray to circle
+        NOTE: Physics.OverlapCircle triggers a collision from its own collider. Unable
+        Unable to find a fix to allow it to ignore itself but collide with everything else.
+    2. Add meteorite sprite
+    3. Add meteorite animations
+    4. Add meteorite particles (impact, flying, etc)
+
+*/
 
 public class MeteoriteController : MonoBehaviour
 {
     private float areaOfImpact = 3f;
-    private float areaofEffect = 6f;
+    private float extraHeightTest = 0.02f;
     [SerializeField] private LayerMask targetLayer;
+    private CircleCollider2D meteoriteCollider;
+    private Rigidbody2D rb2d;
 
-    // Update is called once per frame
+    void Start()
+    {
+        meteoriteCollider = GetComponent<CircleCollider2D>();
+        rb2d = GetComponent<Rigidbody2D>();
+    }
+
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if(meteoriteCollisionDetector())
         {
             explode();
+            Destroy(this.gameObject);
         }
     }
 
@@ -27,22 +46,12 @@ public class MeteoriteController : MonoBehaviour
             CinemachineCameraShake.Instance.shakeCamera(10f, 2f);
             obj.GetComponent<PlayerController>().damagePlayer(1);
         }
-
-        // Effect area
-        Collider2D[] objectsImpacted = Physics2D.OverlapCircleAll(transform.position, areaofEffect, targetLayer);
-        foreach(Collider2D obj in objectsImpacted)
-        {
-            Debug.Log("Player damaged " + obj.name);
-            CinemachineCameraShake.Instance.shakeCamera(5f, 1f);
-            obj.GetComponent<PlayerController>().damagePlayer(1);
-        }
     }
 
-    void OnDrawGizmosSelected()
+    private bool meteoriteCollisionDetector()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, areaOfImpact);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, areaofEffect);
+        RaycastHit2D rayCast = Physics2D.Raycast(meteoriteCollider.bounds.center, Vector2.down, meteoriteCollider.bounds.extents.y + extraHeightTest);
+        
+        return rayCast;
     }
 }

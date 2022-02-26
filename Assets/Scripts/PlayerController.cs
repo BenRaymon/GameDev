@@ -7,6 +7,10 @@ using UnityEngine;
 TODO
 
 1. Add a delay to jumping
+2. Add charged jumping
+    2a. Change attackEnemy() to use Physics2D.OverlapCircle to simulate AOE damage from landing
+3. Add damage animations
+4. Modify jump animation to support charged jumping
 
 */
 
