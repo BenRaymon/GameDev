@@ -20,12 +20,16 @@ public class EnemyController : MonoBehaviour
     private Transform playerLocation;
     private Rigidbody2D rb2d;
     private SpriteRenderer enemySprite;
+    private Animator enemyAnimator;
+    private enum enemyState {idle, run, attack}
+    private enemyState state;
 
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
         enemySprite = GetComponent<SpriteRenderer>();
         playerLocation = player.GetComponent<Transform>();
+        enemyAnimator = GetComponent<Animator>();
     }
 
     void Update()
@@ -39,11 +43,22 @@ public class EnemyController : MonoBehaviour
             enemySprite.flipX = false;
         else if(rb2d.velocity.x < -.1f)
             enemySprite.flipX = true;
+
+        updateEnemyState();
     }
 
-    void FixedUpdate()
+    private void updateEnemyState()
     {
+        if(rb2d.velocity.x > .1f || rb2d.velocity.x < -.1f)
+        {
+            state = enemyState.run;
+        }
+        else if(Mathf.Approximately(rb2d.velocity.x, 0f) && Mathf.Approximately(rb2d.velocity.y, 0f))
+        {
+            state = enemyState.idle;
+        }
 
+        enemyAnimator.SetInteger("state", (int)state);
     }
 
     public void takeDamage(int damage)
