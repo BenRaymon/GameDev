@@ -3,11 +3,10 @@ using UnityEngine;
 /**
 
 TODO
-    1. Add function to attack player
-        1. Collision detection
-    2. Create and add enemy animation
-    3. Improve enemy movement
+    1. Create and add enemy attack animation
+    2. Improve enemy movement
         NOTE: using velocity is too slow, addforce can sometimes lead to enemies shooting off into the distance
+    3. Find a way to get prefabbed dinosaurs to spawn with player object set
 
 */
 public class EnemyController : MonoBehaviour
@@ -19,15 +18,14 @@ public class EnemyController : MonoBehaviour
     public GameObject player;
     private Transform playerLocation;
     private Rigidbody2D rb2d;
-    private SpriteRenderer enemySprite;
     private Animator enemyAnimator;
     private enum enemyState {idle, run, attack}
     private enemyState state;
+    private bool facingRight = true;
 
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        enemySprite = GetComponent<SpriteRenderer>();
         playerLocation = player.GetComponent<Transform>();
         enemyAnimator = GetComponent<Animator>();
     }
@@ -39,12 +37,21 @@ public class EnemyController : MonoBehaviour
         if(Vector2.Distance(transform.position, playerLocation.position) < chaseDistance)
             rb2d.AddForce(playerDistance);
         
-        if(rb2d.velocity.x > .1f)
-            enemySprite.flipX = false;
-        else if(rb2d.velocity.x < -.1f)
-            enemySprite.flipX = true;
+        if(rb2d.velocity.x > .1f && !facingRight)   
+            flip();
+        else if(rb2d.velocity.x < -.1f && facingRight)
+            flip();
 
         updateEnemyState();
+    }
+
+    private void flip()
+    {
+        Vector3 currentScale = transform.localScale;
+        currentScale.x *= -1;
+
+        transform.localScale = currentScale;
+        facingRight = !facingRight;
     }
 
     private void updateEnemyState()
@@ -66,5 +73,14 @@ public class EnemyController : MonoBehaviour
         enemyHealth -= damage;
         if(enemyHealth <= 0)
             Destroy(this.gameObject);
+    }
+
+    void OnCollisionStay2D(Collision2D col)
+    {
+        GameObject objectHit = col.gameObject;
+        if(objectHit.tag == "Player")
+        {
+            objectHit.GetComponent<PlayerController>().damagePlayer(1);
+        }
     }
 }

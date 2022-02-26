@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviour
     public void damagePlayer(int damage)
     {
         playerHealth -= damage;
+        Debug.Log("Player Health: " + playerHealth);
         if(playerHealth <= 0)
             Destroy(this.gameObject);
     }
