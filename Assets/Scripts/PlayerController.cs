@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private float timeBeforeFall = 0.08f;
     private float timeBeforeFallDelta;
     private float moveSpeed = 2f;
-    private float jumpForce = 50f;
+    private float jumpForce = 40f;
     private int playerHealth = 100;
     private float horizontalMovement;
     private float verticalMovement;

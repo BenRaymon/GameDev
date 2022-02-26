@@ -43,7 +43,7 @@ public class MeteoriteController : MonoBehaviour
         foreach(Collider2D obj in objectsHit)
         {
             Debug.Log("Player damaged " + obj.name);
-            CinemachineCameraShake.Instance.shakeCamera(10f, 2f);
+            CinemachineCameraShake.Instance.shakeCamera(2f, 2f);
             obj.GetComponent<PlayerController>().damagePlayer(1);
         }
     }
