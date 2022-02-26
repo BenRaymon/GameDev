@@ -26,11 +26,15 @@ public class PlayerController : MonoBehaviour
     private float moveSpeed = 2f;
     private float jumpForce = 40f;
     private int playerHealth = 100;
+    private float jumpChargeForce = 0f;
+    private float chargedJumpTimer = 2f;
+    private float chargedCameraShakeIntensity = 0f;
+    private bool chargedJump = false;
+    private bool charging = false;
     private float horizontalMovement;
     private float verticalMovement;
-    
-    // Currently used for debugging purposes
-    private enum characterState {idle, running, jumping, falling}
+    private enum characterState {idle, running, jumping, falling, chargingJump}
+    // Can be repurposed to display player health later
     private TextMesh playerStateText;
     private characterState playerState;
 
@@ -49,6 +53,27 @@ public class PlayerController : MonoBehaviour
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
         verticalMovement = Input.GetAxisRaw("Vertical");
+        
+        if(Input.GetKey(KeyCode.Space) && isGrounded())
+        {
+            charging = true;
+            if(chargedJumpTimer > 0f)
+            {
+                chargedCameraShakeIntensity += Time.deltaTime;
+                jumpChargeForce += Time.deltaTime;
+                chargedJumpTimer -= Time.deltaTime;
+                CinemachineCameraShake.Instance.shakeCamera(chargedCameraShakeIntensity, .1f);
+            }
+            else
+            {
+                chargedJump = true;
+            }
+        }
+        
+        if(Input.GetKeyUp(KeyCode.Space) && charging)
+        {
+            chargedJump = true;
+        }
 
         updatePlayerState();
 
@@ -58,7 +83,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(horizontalMovement > .1f || horizontalMovement < -.1f)
+        if((horizontalMovement > .1f || horizontalMovement < -.1f) && !charging)
         {
             if(horizontalMovement > .1f)
                 playerSprite.flipX = false;
@@ -66,9 +91,21 @@ public class PlayerController : MonoBehaviour
                 playerSprite.flipX = true;
             rb2d.AddForce(new Vector2(horizontalMovement * moveSpeed, 0f), ForceMode2D.Impulse);
         }
-        if(verticalMovement > .1f && isGrounded())
+        if(verticalMovement > .1f && isGrounded() && !charging)
         {
             rb2d.AddForce(new Vector2(0f, verticalMovement * jumpForce), ForceMode2D.Impulse);
+        }
+
+        if(chargedJump)
+        {
+            float newJumpForce = jumpForce * jumpChargeForce;
+            rb2d.AddForce(new Vector2(0f, newJumpForce), ForceMode2D.Impulse);
+
+            chargedJump = false;
+            jumpChargeForce = 0f;
+            chargedJumpTimer = 2f;
+            charging = false;
+            chargedCameraShakeIntensity = 0f;
         }
     }
 
@@ -125,7 +162,7 @@ public class PlayerController : MonoBehaviour
 
     private void updatePlayerState()
     {
-        if((horizontalMovement > .1f || horizontalMovement < -.1f) && Mathf.Approximately(rb2d.velocity.y, 0f))
+        if((rb2d.velocity.x > .1f || rb2d.velocity.x < -.1f) && Mathf.Approximately(rb2d.velocity.y, 0f))
         {        
             playerState = characterState.running;
             playerStateText.text = "running";
@@ -151,6 +188,12 @@ public class PlayerController : MonoBehaviour
                 playerState = characterState.falling;
                 playerStateText.text = "falling";
             }
+        }
+
+        if(charging)
+        {
+            playerState = characterState.chargingJump;
+            playerStateText.text = "charging";
         }
 
         if(playerState != characterState.falling && playerState != characterState.jumping)

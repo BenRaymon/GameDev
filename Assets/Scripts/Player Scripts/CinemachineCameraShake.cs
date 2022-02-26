@@ -4,6 +4,7 @@ using Cinemachine;
 public class CinemachineCameraShake : MonoBehaviour
 {
     private CinemachineVirtualCamera cmVirtualCamera;
+    private CinemachineBasicMultiChannelPerlin cmBasicMultiChannelPerlin;
     private float shakeTime;
 
     public static CinemachineCameraShake Instance { get; private set; }
@@ -11,11 +12,12 @@ public class CinemachineCameraShake : MonoBehaviour
     {
         Instance = this;
         cmVirtualCamera = GetComponent<CinemachineVirtualCamera>();
+        cmBasicMultiChannelPerlin = cmVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
     public void shakeCamera(float intensity, float time)
     {
-        CinemachineBasicMultiChannelPerlin cmBasicMultiChannelPerlin = cmVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        // accesses multichannelperlin on virtual camera that controls shaking.
         cmBasicMultiChannelPerlin.m_AmplitudeGain = intensity; 
 
         shakeTime = time;
@@ -28,7 +30,6 @@ public class CinemachineCameraShake : MonoBehaviour
             shakeTime -= Time.deltaTime;
             if(shakeTime <= 0f)
             {
-                CinemachineBasicMultiChannelPerlin cmBasicMultiChannelPerlin = cmVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
                 cmBasicMultiChannelPerlin.m_AmplitudeGain = 0f;
             }
         }

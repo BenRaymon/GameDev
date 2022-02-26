@@ -6,6 +6,7 @@ TODO
     1. Create and add enemy attack animation
     2. Improve enemy movement
         NOTE: using velocity is too slow, addforce can sometimes lead to enemies shooting off into the distance
+    3. Add some sort of pathing that prevents enemies from running off a cliff.
 */
 public class EnemyController : MonoBehaviour
 {
@@ -31,8 +32,10 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
+        // Calculates distance to player
         Vector2 playerDistance = new Vector2(playerLocation.position.x - transform.position.x, 0f);
 
+        // Moves enemy only if the distance to player is less than the pre-set chase distance.
         if(Vector2.Distance(transform.position, playerLocation.position) < chaseDistance)
             rb2d.AddForce(playerDistance);
         
@@ -44,6 +47,7 @@ public class EnemyController : MonoBehaviour
         updateEnemyState();
     }
 
+    // Flips enemy using localscale instead of sprite.flipx so that the circle collider maintains its position
     private void flip()
     {
         Vector3 currentScale = transform.localScale;
@@ -74,6 +78,7 @@ public class EnemyController : MonoBehaviour
             Destroy(this.gameObject);
     }
 
+    // Runs when a collision is detected and continues until the collision stops.
     void OnCollisionStay2D(Collision2D col)
     {
         GameObject objectHit = col.gameObject;

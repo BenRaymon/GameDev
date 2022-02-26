@@ -15,7 +15,7 @@ public class MainMenuController : MonoBehaviour
 
     public void startGameTestArea()
     {
-        SceneManager.LoadScene(newGameLevel);
+        SceneManager.LoadScene("TestingEnvironment");
     }
 
     public void exitGame()

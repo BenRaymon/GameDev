@@ -38,8 +38,10 @@ public class MeteoriteController : MonoBehaviour
 
     private void explode()
     {
-        // Kill area
+        // Simulates kill area by generating a sphere and getting any objects that are inside
         Collider2D[] objectsHit = Physics2D.OverlapCircleAll(transform.position, areaOfImpact, targetLayer);
+
+        // Checks every object inside the 'kill sphere.' Could be redundant as the player is the only object with the Player layer.
         foreach(Collider2D obj in objectsHit)
         {
             Debug.Log("Player damaged " + obj.name);
@@ -48,6 +50,8 @@ public class MeteoriteController : MonoBehaviour
         }
     }
 
+    // Uses same raycast as player to detect collision. This should be changed to a circle or boxcast method as anything that hits
+    // the side of the sphere will not trigger a collision.
     private bool meteoriteCollisionDetector()
     {
         RaycastHit2D rayCast = Physics2D.Raycast(meteoriteCollider.bounds.center, Vector2.down, meteoriteCollider.bounds.extents.y + extraHeightTest);
