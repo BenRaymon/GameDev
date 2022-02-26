@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     private float moveSpeed = 2f;
     private float jumpForce = 40f;
     private int playerHealth = 100;
+    private bool isJumping = false;
 
     // Setup for charged jumping
     private float jumpChargeForce = 0f;
@@ -65,7 +66,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
-        verticalMovement = Input.GetAxisRaw("Vertical");
+        if((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded())
+        {
+            Debug.Log("Jumping");
+            isJumping = true;
+        }
         
         if(Input.GetKey(KeyCode.Space) && isGrounded())
         {
@@ -105,9 +110,10 @@ public class PlayerController : MonoBehaviour
                 playerSprite.flipX = true;
             rb2d.AddForce(new Vector2(horizontalMovement * moveSpeed, 0f), ForceMode2D.Impulse);
         }
-        if(verticalMovement > .1f && isGrounded() && !charging)
+        if(isJumping && isGrounded() && !charging)
         {
-            rb2d.AddForce(new Vector2(0f, verticalMovement * jumpForce), ForceMode2D.Impulse);
+            rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            isJumping = false;
         }
 
         if(chargedJump)
