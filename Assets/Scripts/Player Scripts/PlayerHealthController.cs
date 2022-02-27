@@ -7,11 +7,6 @@ public class PlayerHealthController : MonoBehaviour
     private Animator playerAnimator;
     private Rigidbody2D rb2d;
 
-    void Update()
-    {
-        checkHealth();
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -27,10 +22,6 @@ public class PlayerHealthController : MonoBehaviour
     public void damagePlayer(int damage)
     {
         playerHealth -= damage;
-    }
-
-    private void checkHealth()
-    {
         if(playerHealth <= 0)
         {
             death();
