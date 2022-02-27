@@ -11,7 +11,7 @@ TODO
 public class EnemyController : MonoBehaviour
 {
     public int enemyHealth = 100;
-    public float chaseDistance;
+    private float chaseDistance = 10f;
     public float enemySpeed;
 
     private GameObject player;
@@ -47,6 +47,11 @@ public class EnemyController : MonoBehaviour
         updateEnemyState();
     }
 
+    void FixedUpdate()
+    {
+        
+    }
+
     // Flips enemy using localscale instead of sprite.flipx so that the circle collider maintains its position
     private void flip()
     {
@@ -79,12 +84,18 @@ public class EnemyController : MonoBehaviour
     }
 
     // Runs when a collision is detected and continues until the collision stops.
-    void OnCollisionStay2D(Collision2D col)
+    void OnTriggerStay2D(Collider2D col)
     {
-        GameObject objectHit = col.gameObject;
+        GameObject objectHit = col?.gameObject;
         if(objectHit.tag == "Player")
         {
             objectHit.GetComponent<PlayerController>().damagePlayer(1);
         }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, chaseDistance);
     }
 }

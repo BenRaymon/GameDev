@@ -68,7 +68,6 @@ public class PlayerController : MonoBehaviour
         horizontalMovement = Input.GetAxisRaw("Horizontal");
         if((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded())
         {
-            Debug.Log("Jumping");
             isJumping = true;
         }
         

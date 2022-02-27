@@ -1078,13 +1078,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dinosaur
       objectReference: {fileID: 0}
-    - target: {fileID: 5452989487198291600, guid: d73e9071a4b5c524d9273363e01ad421, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5452989487198291600, guid: d73e9071a4b5c524d9273363e01ad421, type: 3}
-      propertyPath: m_UsedByEffector
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d73e9071a4b5c524d9273363e01ad421, type: 3}
