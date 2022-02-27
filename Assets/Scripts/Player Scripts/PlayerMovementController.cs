@@ -78,7 +78,7 @@ public class PlayerMovementController : MonoBehaviour
         if(Input.GetKeyUp(KeyCode.Space)){
             if(test > 0 && test < 100){
                 //cause a jump
-                Debug.Log("regular jump");
+                Debug.Log("REGULAR JUMPS");
                 jump(jumpForce);
                 
             }
