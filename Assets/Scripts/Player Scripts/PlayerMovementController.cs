@@ -32,12 +32,8 @@ public class PlayerMovementController : MonoBehaviour
     private bool isJumping = false;
 
     // Setup for charged jumping
-    private float jumpChargeForce = 0f;
-    private float maxChargeTime = 2f;
-    private float chargedJumpTimerDelta;
-    private float chargedCameraShakeIntensity = 0f;
-    private bool chargedJump = false;
-    private bool charging = false;
+    private int test = 0;
+    private bool forcedJump = false;
 
     // Setup for registering movement
     private float horizontalMovement;
@@ -60,37 +56,42 @@ public class PlayerMovementController : MonoBehaviour
         playerSprite = GetComponent<SpriteRenderer>();
 
         timeBeforeFallDelta = timeBeforeFall;
-        chargedJumpTimerDelta = maxChargeTime;
     }
 
     void Update()
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
-        if((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded())
-        {
-            isJumping = true;
-        }
-        
-        if(Input.GetKey(KeyCode.Space) && isGrounded())
-        {
-            charging = true;
-            if(chargedJumpTimerDelta > 0f)
-            {
-                chargedCameraShakeIntensity += Time.deltaTime;
-                jumpChargeForce += Time.deltaTime;
-                chargedJumpTimerDelta -= Time.deltaTime;
-                CinemachineCameraShake.Instance.shakeCamera(chargedCameraShakeIntensity, .1f);
-            }
-            else
-            {
-                chargedJump = true;
+
+        if(Input.GetKey(KeyCode.Space) && isGrounded()){
+            //only accumulate if not a forced jump
+            if(!forcedJump)
+                test += 1;
+            
+            //force a jump if too long
+            if(test > 500){
+                test = 0;
+                jump(jumpForce + 500/20);
+                forcedJump = true;
             }
         }
-        
-        // Used to detect early release of space bar.
-        if(Input.GetKeyUp(KeyCode.Space) && charging)
-        {
-            chargedJump = true;
+
+        if(Input.GetKeyUp(KeyCode.Space)){
+            if(test > 0 && test < 100){
+                //cause a jump
+                Debug.Log("REGULAR JUMP");
+                jump(jumpForce);
+                
+            }
+            else if (test > 100 && test <= 500){
+                //charged jump based on test
+                Debug.Log("CHARGED JUMP");
+                jump(jumpForce + test/20);
+            }
+            else{
+                forcedJump = false;
+                //hold for too long, force the jump
+            }
+            test = 0;
         }
 
         updatePlayerState();
@@ -99,9 +100,14 @@ public class PlayerMovementController : MonoBehaviour
             attackEnemy();
     }
 
+    private void jump(float force){
+        rb2d.AddForce(new Vector2(0f, force), ForceMode2D.Impulse);
+        jumpSoundEffect.Play();
+    }
+
     void FixedUpdate()
     {
-        if((horizontalMovement > .1f || horizontalMovement < -.1f) && !charging)
+        if((horizontalMovement > .1f || horizontalMovement < -.1f))
         {
             if(horizontalMovement > .1f)
                 playerSprite.flipX = false;
@@ -109,27 +115,7 @@ public class PlayerMovementController : MonoBehaviour
                 playerSprite.flipX = true;
             rb2d.AddForce(new Vector2(horizontalMovement * moveSpeed, 0f), ForceMode2D.Impulse);
         }
-        if(isJumping && isGrounded() && !charging)
-        {
-            rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-            jumpSoundEffect.Play();
-            isJumping = false;
-        }
-
-        if(chargedJump)
-        {
-            float newJumpForce = jumpForce * jumpChargeForce;
-            rb2d.AddForce(new Vector2(0f, newJumpForce), ForceMode2D.Impulse);
-            jumpSoundEffect.Play();
-
-            // Reset values for charged jump.
-            // Are there any better ways to do this?
-            chargedJump = false;
-            jumpChargeForce = 0f;
-            chargedJumpTimerDelta = maxChargeTime;
-            charging = false;
-            chargedCameraShakeIntensity = 0f;
-        }
+        
     }
 
     private bool isGrounded()
@@ -205,11 +191,11 @@ public class PlayerMovementController : MonoBehaviour
             }
         }
 
-        if(charging)
-        {
-            playerState = characterState.chargingJump;
-            playerStateText.text = "charging";
-        }
+        //if(charging)
+        //{
+        //    playerState = characterState.chargingJump;
+        //    playerStateText.text = "charging";
+        //}
 
         if(playerState != characterState.falling && playerState != characterState.jumping)
             timeBeforeFallDelta = timeBeforeFall;
