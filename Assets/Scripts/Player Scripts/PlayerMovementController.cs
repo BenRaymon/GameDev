@@ -49,6 +49,8 @@ public class PlayerMovementController : MonoBehaviour
     private TextMesh playerStateText;
     private characterState playerState;
 
+    [SerializeField] private AudioSource jumpSoundEffect;
+
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
@@ -110,6 +112,7 @@ public class PlayerMovementController : MonoBehaviour
         if(isJumping && isGrounded() && !charging)
         {
             rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            jumpSoundEffect.Play();
             isJumping = false;
         }
 
@@ -117,6 +120,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             float newJumpForce = jumpForce * jumpChargeForce;
             rb2d.AddForce(new Vector2(0f, newJumpForce), ForceMode2D.Impulse);
+            jumpSoundEffect.Play();
 
             // Reset values for charged jump.
             // Are there any better ways to do this?

@@ -17,24 +17,28 @@ TODO
 
 public class MeteoriteController : MonoBehaviour
 {
-    private float areaOfImpact = 3f;
-    private float extraHeightTest = 0.02f;
+    private float areaOfImpact = 5f;
     [SerializeField] private LayerMask targetLayer;
-    private CircleCollider2D meteoriteCollider;
     private Rigidbody2D rb2d;
+    [SerializeField] private AudioSource explosionSoundEffect;
+
+    private enum meteoriteState {falling, exploding}
+    private meteoriteState state;
+    private Animator meteoriteAnimator;
 
     void Start()
     {
-        meteoriteCollider = GetComponent<CircleCollider2D>();
         rb2d = GetComponent<Rigidbody2D>();
+        meteoriteAnimator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        if(meteoriteCollisionDetector())
+        updateAnimationState();
+        if(rb2d.velocity != Vector2.zero)
         {
-            explode();
-            Destroy(this.gameObject);
+            float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
 
@@ -58,12 +62,17 @@ public class MeteoriteController : MonoBehaviour
         }
     }
 
-    // Uses same raycast as player to detect collision. This should be changed to a circle or boxcast method as anything that hits
-    // the side of the sphere will not trigger a collision.
-    private bool meteoriteCollisionDetector()
+    private void updateAnimationState()
     {
-        RaycastHit2D rayCast = Physics2D.Raycast(meteoriteCollider.bounds.center, Vector2.down, meteoriteCollider.bounds.extents.y + extraHeightTest);
-        
-        return rayCast;
+        if(rb2d.velocity != Vector2.zero)
+            state = meteoriteState.falling;
+    }
+
+    void OnCollisionEnter2D()
+    {
+        state = meteoriteState.exploding;
+        explosionSoundEffect.Play();
+        explode();
+        Destroy(this.gameObject, .2f);
     }
 }
