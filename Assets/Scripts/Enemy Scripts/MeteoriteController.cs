@@ -44,9 +44,15 @@ public class MeteoriteController : MonoBehaviour
         // Checks every object inside the 'kill sphere.' Could be redundant as the player is the only object with the Player layer.
         foreach(Collider2D obj in objectsHit)
         {
-            Debug.Log("Player damaged " + obj.name);
-            CinemachineCameraShake.Instance.shakeCamera(2f, 2f);
-            obj.GetComponent<PlayerController>().damagePlayer(1);
+            if(obj.tag == "Player")
+            {
+                PlayerHealthController playerReference = obj.GetComponent<PlayerHealthController>();
+                if(playerReference.getHealth() > 0)
+                    playerReference.damagePlayer(75);
+                else  
+                    return;
+                CinemachineCameraShake.Instance.shakeCamera(2f, 2f);
+            } 
         }
     }
 

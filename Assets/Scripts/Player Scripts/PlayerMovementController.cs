@@ -12,7 +12,7 @@ TODO
 
 */
 
-public class PlayerController : MonoBehaviour
+public class PlayerMovementController : MonoBehaviour
 {
     // GetComponent Setup
     private Rigidbody2D rb2d;
@@ -30,7 +30,6 @@ public class PlayerController : MonoBehaviour
     // General player stats
     private float moveSpeed = 2f;
     private float jumpForce = 40f;
-    private int playerHealth = 100;
     private bool isJumping = false;
 
     // Setup for charged jumping
@@ -159,14 +158,6 @@ public class PlayerController : MonoBehaviour
             collisionRight.GetComponent<EnemyController>().takeDamage(100);
         }
 
-    }
-
-    public void damagePlayer(int damage)
-    {
-        playerHealth -= damage;
-        Debug.Log("Player Health: " + playerHealth);
-        if(playerHealth <= 0)
-            Destroy(this.gameObject);
     }
 
     //This function takes in 

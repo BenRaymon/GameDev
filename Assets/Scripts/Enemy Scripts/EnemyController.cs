@@ -89,7 +89,11 @@ public class EnemyController : MonoBehaviour
         GameObject objectHit = col?.gameObject;
         if(objectHit.tag == "Player")
         {
-            objectHit.GetComponent<PlayerController>().damagePlayer(1);
+            PlayerHealthController playerReference = objectHit.GetComponent<PlayerHealthController>();
+            if(playerReference.getHealth() > 0)
+                playerReference.damagePlayer(1);
+            else  
+                return;
         }
     }
 
