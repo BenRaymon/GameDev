@@ -10,6 +10,8 @@ TODO
     2. Add meteorite sprite
     3. Add meteorite animations
     4. Add meteorite particles (impact, flying, etc)
+    5. Add raycast to detect impact point based on current velocity. 
+        5a. Use raycast to instantiate sometype of marker at impact point to indicate danger to the player
 
 */
 

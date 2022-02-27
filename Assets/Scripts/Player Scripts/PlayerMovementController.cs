@@ -8,7 +8,6 @@ TODO
 2. Change attackEnemy() to use Physics2D.OverlapCircle to simulate AOE damage from landing
     2a. Possibly change regular jumping to quick jump and reduce damage done. Increase damage for charged jumps.
 3. Add damage animations
-4. Modify jump animation to support charged jumping
 
 */
 

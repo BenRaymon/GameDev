@@ -7,6 +7,19 @@ TODO
     2. Improve enemy movement
         NOTE: using velocity is too slow, addforce can sometimes lead to enemies shooting off into the distance
     3. Add some sort of pathing that prevents enemies from running off a cliff.
+    4. Find a better way to handle attacking the player.
+        NOTE: Right now, the dinosaur enemy uses a separate circle collider located near the sprite's mouth.
+        This is to prevent the player from taking damage when attacking (landing on top of the dinosaur).
+        flip() was created to maintain the collider position
+
+*/
+
+/**
+
+BUGS
+    1. Dinosaur enemy will flip directions when pushed by player.
+        NOTE: Find a better way to handle adjusting the sprite's facing direction
+
 */
 public class EnemyController : MonoBehaviour
 {
@@ -95,11 +108,5 @@ public class EnemyController : MonoBehaviour
             else  
                 return;
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, chaseDistance);
     }
 }
