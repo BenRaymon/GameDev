@@ -4,8 +4,6 @@ using UnityEngine;
 
 TODO
     1. Create and add enemy attack animation
-    2. Improve enemy movement
-        NOTE: using velocity is too slow, addforce can sometimes lead to enemies shooting off into the distance
     3. Add some sort of pathing that prevents enemies from running off a cliff.
     4. Find a better way to handle attacking the player.
         NOTE: Right now, the dinosaur enemy uses a separate circle collider located near the sprite's mouth.
@@ -14,18 +12,10 @@ TODO
 
 */
 
-/**
-
-BUGS
-    1. Dinosaur enemy will flip directions when pushed by player.
-        NOTE: Find a better way to handle adjusting the sprite's facing direction
-
-*/
 public class EnemyController : MonoBehaviour
 {
     public int enemyHealth = 100;
     private float chaseDistance = 10f;
-    public float enemySpeed;
 
     private GameObject player;
     private Transform playerLocation;
@@ -50,7 +40,7 @@ public class EnemyController : MonoBehaviour
 
         // Moves enemy only if the distance to player is less than the pre-set chase distance.
         if(Vector2.Distance(transform.position, playerLocation.position) < chaseDistance)
-            rb2d.AddForce(playerDistance);
+            rb2d.AddForce(5*playerDistance.normalized);
         
         if(rb2d.velocity.x > .1f && !facingRight)   
             flip();
@@ -104,7 +94,7 @@ public class EnemyController : MonoBehaviour
         {
             PlayerHealthController playerReference = objectHit.GetComponent<PlayerHealthController>();
             if(playerReference.getHealth() > 0)
-                playerReference.damagePlayer(1);
+                playerReference.damagePlayer(100);
             else  
                 return;
         }

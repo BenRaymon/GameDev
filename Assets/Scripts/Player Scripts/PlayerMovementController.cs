@@ -29,15 +29,14 @@ public class PlayerMovementController : MonoBehaviour
     // General player stats
     private float moveSpeed = 2f;
     private float jumpForce = 40f;
-    private bool isJumping = false;
 
     // Setup for charged jumping
-    private float jumpChargeForce = 0f;
-    private float maxChargeTime = 2f;
-    private float chargedJumpTimerDelta;
-    private float chargedCameraShakeIntensity = 0f;
+    private int chargeCounter = 0;
+    private bool forcedJump = false;
+    // Is this better? Replaced code block under getkeyup
     private bool chargedJump = false;
-    private bool charging = false;
+    // for stopping player movement while charging and for animation trigger. Is there a better way?
+    private bool chargingJump = false;
 
     // Setup for registering movement
     private float horizontalMovement;
@@ -49,8 +48,6 @@ public class PlayerMovementController : MonoBehaviour
     private TextMesh playerStateText;
     private characterState playerState;
 
-    [SerializeField] private AudioSource jumpSoundEffect;
-
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
@@ -60,38 +57,13 @@ public class PlayerMovementController : MonoBehaviour
         playerSprite = GetComponent<SpriteRenderer>();
 
         timeBeforeFallDelta = timeBeforeFall;
-        chargedJumpTimerDelta = maxChargeTime;
     }
 
     void Update()
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
-        if((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded())
-        {
-            isJumping = true;
-        }
-        
-        if(Input.GetKey(KeyCode.Space) && isGrounded())
-        {
-            charging = true;
-            if(chargedJumpTimerDelta > 0f)
-            {
-                chargedCameraShakeIntensity += Time.deltaTime;
-                jumpChargeForce += Time.deltaTime;
-                chargedJumpTimerDelta -= Time.deltaTime;
-                CinemachineCameraShake.Instance.shakeCamera(chargedCameraShakeIntensity, .1f);
-            }
-            else
-            {
-                chargedJump = true;
-            }
-        }
-        
-        // Used to detect early release of space bar.
-        if(Input.GetKeyUp(KeyCode.Space) && charging)
-        {
-            chargedJump = true;
-        }
+
+        checkForJump();
 
         updatePlayerState();
 
@@ -101,41 +73,75 @@ public class PlayerMovementController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if((horizontalMovement > .1f || horizontalMovement < -.1f) && !charging)
+        movePlayer();
+        jumpPlayer();
+    }
+
+    private void checkForJump()
+    {
+        if(Input.GetKey(KeyCode.Space) && isGrounded())
         {
+            if(!forcedJump)
+            {
+                chargeCounter += 1;
+                CinemachineCameraShake.Instance.shakeCamera(chargeCounter/100, .1f);
+                if(chargeCounter > 120)
+                    chargingJump = true;
+            }
+            
+            // forces a jump if held too long
+            if(chargeCounter > 500)
+            {
+                chargeCounter = 0;
+                forcedJump = true;
+                chargingJump = false;
+            }
+        }
+
+        if(Input.GetKeyUp(KeyCode.Space) && isGrounded())
+        {
+            chargedJump = true;
+            chargingJump = false;
+            chargeCounter = 0;
+        }
+    }
+
+    private void movePlayer()
+    {
+        // checks to see if the player is pressing any of the movement keys
+        if((horizontalMovement > .1f || horizontalMovement < -.1f) && !chargingJump)
+        {
+            // flips sprite so it is facing the direction of movement
             if(horizontalMovement > .1f)
                 playerSprite.flipX = false;
             else if(horizontalMovement < -.1f)
                 playerSprite.flipX = true;
+
             rb2d.AddForce(new Vector2(horizontalMovement * moveSpeed, 0f), ForceMode2D.Impulse);
         }
-        if(isJumping && isGrounded() && !charging)
+    }
+
+    private void jumpPlayer()
+    {
+        if(forcedJump)
         {
-            rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-            jumpSoundEffect.Play();
-            isJumping = false;
+            rb2d.AddForce(new Vector2(0f, jumpForce + 500/20), ForceMode2D.Impulse);
+            forcedJump = false;
         }
 
         if(chargedJump)
         {
-            float newJumpForce = jumpForce * jumpChargeForce;
-            rb2d.AddForce(new Vector2(0f, newJumpForce), ForceMode2D.Impulse);
-            jumpSoundEffect.Play();
-
-            // Reset values for charged jump.
-            // Are there any better ways to do this?
+            if(chargeCounter < 100)
+                rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            else
+                rb2d.AddForce(new Vector2(0f, jumpForce + chargeCounter/20), ForceMode2D.Impulse);
             chargedJump = false;
-            jumpChargeForce = 0f;
-            chargedJumpTimerDelta = maxChargeTime;
-            charging = false;
-            chargedCameraShakeIntensity = 0f;
         }
     }
 
     private bool isGrounded()
     {
         // Tests if a player is grounded by casting a ray and checking if the ray is colliding with any existing colliders.
-        // 'Queries start in colliders' is disabled in Project Settings -> Physics2D in order for raycast to ignore its own collider.
 
         // Casts a ray from the center-bottom of the player's box collider
         RaycastHit2D rayCastGroundTest = Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + extraHeightTest);
@@ -205,7 +211,7 @@ public class PlayerMovementController : MonoBehaviour
             }
         }
 
-        if(charging)
+        if(chargingJump)
         {
             playerState = characterState.chargingJump;
             playerStateText.text = "charging";
