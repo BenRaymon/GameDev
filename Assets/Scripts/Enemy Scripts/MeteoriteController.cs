@@ -18,7 +18,7 @@ public class MeteoriteController : MonoBehaviour
 
     private Animator meteoriteAnimator;
 
-    void Start()
+    void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
         meteoriteAnimator = GetComponent<Animator>();
@@ -58,8 +58,14 @@ public class MeteoriteController : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    public void addSpeed(Vector2 forceDirection)
+    {
+        rb2d.AddForce(forceDirection, ForceMode2D.Impulse);
+    }
+
     void OnCollisionEnter2D()
     {
+        rb2d.bodyType = RigidbodyType2D.Static;
         explode();
         meteoriteAnimator.SetTrigger("explode");
     }

@@ -11,6 +11,8 @@ TODO
 
 */
 
+// NOTE: Player jumping feels sticky and can cause player death if the jump key is not pressed and released instantly.
+
 public class PlayerMovementController : MonoBehaviour
 {
     // GetComponent Setup
@@ -33,10 +35,7 @@ public class PlayerMovementController : MonoBehaviour
     // Setup for charged jumping
     private int chargeCounter = 0;
     private bool forcedJump = false;
-    // Is this better? Replaced code block under getkeyup
     private bool chargedJump = false;
-    // for stopping player movement while charging and for animation trigger. Is there a better way?
-    private bool chargingJump = false;
 
     // Setup for registering movement
     private float horizontalMovement;
@@ -85,8 +84,6 @@ public class PlayerMovementController : MonoBehaviour
             {
                 chargeCounter += 1;
                 CinemachineCameraShake.Instance.shakeCamera(chargeCounter/100, .1f);
-                if(chargeCounter > 120)
-                    chargingJump = true;
             }
             
             // forces a jump if held too long
@@ -94,14 +91,12 @@ public class PlayerMovementController : MonoBehaviour
             {
                 chargeCounter = 0;
                 forcedJump = true;
-                chargingJump = false;
             }
         }
 
         if(Input.GetKeyUp(KeyCode.Space) && isGrounded())
         {
             chargedJump = true;
-            chargingJump = false;
             chargeCounter = 0;
         }
     }
@@ -109,7 +104,7 @@ public class PlayerMovementController : MonoBehaviour
     private void movePlayer()
     {
         // checks to see if the player is pressing any of the movement keys
-        if((horizontalMovement > .1f || horizontalMovement < -.1f) && !chargingJump)
+        if((horizontalMovement > .1f || horizontalMovement < -.1f) && chargeCounter < 120)
         {
             // flips sprite so it is facing the direction of movement
             if(horizontalMovement > .1f)
@@ -211,7 +206,7 @@ public class PlayerMovementController : MonoBehaviour
             }
         }
 
-        if(chargingJump)
+        if(chargeCounter > 120)
         {
             playerState = characterState.chargingJump;
             playerStateText.text = "charging";
