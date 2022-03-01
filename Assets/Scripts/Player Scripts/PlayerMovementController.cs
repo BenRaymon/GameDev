@@ -4,14 +4,9 @@ using UnityEngine;
 
 TODO
 
-1. Add a delay to jumping
-2. Change attackEnemy() to use Physics2D.OverlapCircle to simulate AOE damage from landing
-    2a. Possibly change regular jumping to quick jump and reduce damage done. Increase damage for charged jumps.
-3. Add damage animations
+1. Add damage animations
 
 */
-
-// NOTE: Player jumping feels sticky and can cause player death if the jump key is not pressed and released instantly.
 
 public class PlayerMovementController : MonoBehaviour
 {
@@ -20,6 +15,7 @@ public class PlayerMovementController : MonoBehaviour
     private BoxCollider2D playerCollider;
     private Animator playerAnimator;
     private SpriteRenderer playerSprite;
+    [SerializeField] private LayerMask targetLayer;
 
     // Used for isGround() to extend raycast further from the player
     private float extraHeightTest = 0.02f;
@@ -36,10 +32,10 @@ public class PlayerMovementController : MonoBehaviour
     private int chargeCounter = 0;
     private bool forcedJump = false;
     private bool chargedJump = false;
+    private bool isChargedAttack = false;
 
     // Setup for registering movement
     private float horizontalMovement;
-    private float verticalMovement;
 
     // Setup for player state management
     private enum characterState {idle, running, jumping, falling, chargingJump}
@@ -67,7 +63,7 @@ public class PlayerMovementController : MonoBehaviour
         updatePlayerState();
 
         if(playerState == characterState.falling)
-            attackEnemy();
+            regularAttack();
     }
 
     void FixedUpdate()
@@ -104,7 +100,7 @@ public class PlayerMovementController : MonoBehaviour
     private void movePlayer()
     {
         // checks to see if the player is pressing any of the movement keys
-        if((horizontalMovement > .1f || horizontalMovement < -.1f) && chargeCounter < 120)
+        if((horizontalMovement > .1f || horizontalMovement < -.1f) && chargeCounter < 200)
         {
             // flips sprite so it is facing the direction of movement
             if(horizontalMovement > .1f)
@@ -122,11 +118,13 @@ public class PlayerMovementController : MonoBehaviour
         {
             rb2d.AddForce(new Vector2(0f, jumpForce + 500/20), ForceMode2D.Impulse);
             forcedJump = false;
+            isChargedAttack = true;
         }
 
         if(chargedJump)
         {
-            if(chargeCounter < 100)
+            // did not charge long enough, performs regular jump
+            if(chargeCounter < 200)
                 rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
             else
                 rb2d.AddForce(new Vector2(0f, jumpForce + chargeCounter/20), ForceMode2D.Impulse);
@@ -148,7 +146,7 @@ public class PlayerMovementController : MonoBehaviour
     // Uses the same raycast as isGrounded. Retrieves whatever gameobject collides with the raycast and checks if it is an enemy.
     // If it is an enemy, get the enemycontroller script component of that gameobject and calls the function takeDamage.
     //
-    private void attackEnemy()
+    private void regularAttack()
     {
         //Check for collision on the left side of the player
         GameObject collisionLeft = collisionDetector(playerCollider.bounds.min, Vector2.down, extraHeightTest);
@@ -162,6 +160,27 @@ public class PlayerMovementController : MonoBehaviour
             collisionRight.GetComponent<EnemyController>().takeDamage(100);
         }
 
+    }
+
+    private void chargedAttack()
+    {
+        Collider2D[] objectsHit = Physics2D.OverlapCircleAll(transform.position, 5f, targetLayer);
+
+        foreach(Collider2D obj in objectsHit)
+        {
+            if(obj.tag == "Enemy")
+            {
+                obj.GetComponent<EnemyController>().takeDamage(100);
+            } 
+        }
+        CinemachineCameraShake.Instance.shakeCamera(1f, 1f);
+        isChargedAttack = false;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 5f);
     }
 
     //This function takes in 
@@ -206,7 +225,7 @@ public class PlayerMovementController : MonoBehaviour
             }
         }
 
-        if(chargeCounter > 120)
+        if(chargeCounter > 200)
         {
             playerState = characterState.chargingJump;
             playerStateText.text = "charging";
@@ -216,5 +235,11 @@ public class PlayerMovementController : MonoBehaviour
             timeBeforeFallDelta = timeBeforeFall;
 
         playerAnimator.SetInteger("state", (int)playerState);
+    }
+
+    void OnCollisionEnter2D()
+    {
+        if(isChargedAttack)
+            chargedAttack();
     }
 }

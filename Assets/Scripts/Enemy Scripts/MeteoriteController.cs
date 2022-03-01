@@ -13,9 +13,9 @@ TODO
 public class MeteoriteController : MonoBehaviour
 {
     private float areaOfImpact = 5f;
-    [SerializeField] private LayerMask targetLayer;
+    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private LayerMask groundLayer;
     private Rigidbody2D rb2d;
-
     private Animator meteoriteAnimator;
 
     void Awake()
@@ -31,12 +31,19 @@ public class MeteoriteController : MonoBehaviour
             float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
+        Debug.DrawRay(transform.position, rb2d.velocity, Color.red);
+    }
+
+    private void spawnMarker()
+    {
+        Debug.Log("Spawning marker");
+        RaycastHit2D groundHit = Physics2D.Raycast(transform.position, rb2d.velocity, groundLayer);
     }
 
     private void explode()
     {
         // Simulates kill area by generating a sphere and getting any objects that are inside
-        Collider2D[] objectsHit = Physics2D.OverlapCircleAll(transform.position, areaOfImpact, targetLayer);
+        Collider2D[] objectsHit = Physics2D.OverlapCircleAll(transform.position, areaOfImpact, playerLayer);
 
         // Checks every object inside the 'kill sphere.' Could be redundant as the player is the only object with the Player layer.
         foreach(Collider2D obj in objectsHit)

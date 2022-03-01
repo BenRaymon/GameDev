@@ -98,9 +98,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e074597ea1e4f44da51272f5deee4b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLayer:
+  playerLayer:
     serializedVersion: 2
     m_Bits: 64
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  hitMarker: {fileID: 1731629181771589649, guid: 6eeb9beac7e225241a0444acc2ec6567, type: 3}
 --- !u!95 &2152659576935572454
 Animator:
   serializedVersion: 3

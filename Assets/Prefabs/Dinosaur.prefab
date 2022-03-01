@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2959409956381909709}
   - component: {fileID: 2959409956381909713}
   - component: {fileID: 5452989487198291600}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Dinosaur
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -147,7 +147,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 100
-  enemySpeed: 15
 --- !u!95 &2959409956381909713
 Animator:
   serializedVersion: 3
