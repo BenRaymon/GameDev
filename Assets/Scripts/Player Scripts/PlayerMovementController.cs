@@ -29,7 +29,7 @@ public class PlayerMovementController : MonoBehaviour
     private float jumpForce = 40f;
 
     // Setup for charged jumping
-    private int chargeCounter = 0;
+    private float chargeCounter = 0f;
     private bool forcedJump = false;
     private bool chargedJump = false;
     private bool isChargedAttack = false;
@@ -78,29 +78,27 @@ public class PlayerMovementController : MonoBehaviour
         {
             if(!forcedJump)
             {
-                chargeCounter += 1;
-                CinemachineCameraShake.Instance.shakeCamera(chargeCounter/100, .1f);
+                chargeCounter += Time.deltaTime;
             }
             
             // forces a jump if held too long
-            if(chargeCounter > 500)
+            if(chargeCounter > 2f)
             {
-                chargeCounter = 0;
                 forcedJump = true;
+                chargeCounter = 0f;
             }
         }
 
         if(Input.GetKeyUp(KeyCode.Space) && isGrounded())
         {
             chargedJump = true;
-            chargeCounter = 0;
         }
     }
 
     private void movePlayer()
     {
         // checks to see if the player is pressing any of the movement keys
-        if((horizontalMovement > .1f || horizontalMovement < -.1f) && chargeCounter < 200)
+        if((horizontalMovement > .1f || horizontalMovement < -.1f) && chargeCounter < .5f)
         {
             // flips sprite so it is facing the direction of movement
             if(horizontalMovement > .1f)
@@ -116,7 +114,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if(forcedJump)
         {
-            rb2d.AddForce(new Vector2(0f, jumpForce + 500/20), ForceMode2D.Impulse);
+            rb2d.AddForce(new Vector2(0f, jumpForce * 1.8f), ForceMode2D.Impulse);
             forcedJump = false;
             isChargedAttack = true;
         }
@@ -124,11 +122,16 @@ public class PlayerMovementController : MonoBehaviour
         if(chargedJump)
         {
             // did not charge long enough, performs regular jump
-            if(chargeCounter < 200)
+            if(chargeCounter < .5f)
+            {
                 rb2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+            }
             else
-                rb2d.AddForce(new Vector2(0f, jumpForce + chargeCounter/20), ForceMode2D.Impulse);
+            {
+                rb2d.AddForce(new Vector2(0f, jumpForce + 10f * chargeCounter), ForceMode2D.Impulse);
+            }
             chargedJump = false;
+            chargeCounter = 0f;
         }
     }
 
@@ -225,10 +228,11 @@ public class PlayerMovementController : MonoBehaviour
             }
         }
 
-        if(chargeCounter > 200)
+        if(chargeCounter > .5f)
         {
             playerState = characterState.chargingJump;
             playerStateText.text = "charging";
+            CinemachineCameraShake.Instance.shakeCamera(chargeCounter, .1f);
         }
 
         if(playerState != characterState.falling && playerState != characterState.jumping)

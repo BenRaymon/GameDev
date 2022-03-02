@@ -16,6 +16,7 @@ public class EnemyController : MonoBehaviour
 {
     public int enemyHealth = 100;
     private float chaseDistance = 10f;
+    private Vector2 playerDistance;
 
     private GameObject player;
     private Transform playerLocation;
@@ -36,11 +37,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         // Calculates distance to player
-        Vector2 playerDistance = new Vector2(playerLocation.position.x - transform.position.x, 0f);
-
-        // Moves enemy only if the distance to player is less than the pre-set chase distance.
-        if(Vector2.Distance(transform.position, playerLocation.position) < chaseDistance)
-            rb2d.AddForce(5*playerDistance.normalized);
+        playerDistance = new Vector2(playerLocation.position.x - transform.position.x, 0f);
         
         if(rb2d.velocity.x > .1f && !facingRight)   
             flip();
@@ -52,7 +49,9 @@ public class EnemyController : MonoBehaviour
 
     void FixedUpdate()
     {
-        
+        // Moves enemy only if the distance to player is less than the pre-set chase distance.
+        if((Vector2.Distance(transform.position, playerLocation.position) < chaseDistance) && playerDistance.normalized != Vector2.zero)
+            rb2d.AddForce(2*playerDistance.normalized, ForceMode2D.Impulse);
     }
 
     // Flips enemy using localscale instead of sprite.flipx so that the circle collider maintains its position
