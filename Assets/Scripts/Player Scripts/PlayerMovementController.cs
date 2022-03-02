@@ -235,7 +235,7 @@ public class PlayerMovementController : MonoBehaviour
             CinemachineCameraShake.Instance.shakeCamera(chargeCounter, .1f);
         }
 
-        if(playerState != characterState.falling && playerState != characterState.jumping)
+        if(Mathf.Approximately(rb2d.velocity.y, 0f))
             timeBeforeFallDelta = timeBeforeFall;
 
         playerAnimator.SetInteger("state", (int)playerState);
