@@ -25,7 +25,7 @@ public class MeteoriteSpawner : MonoBehaviour
 
     private void spawnMeteorite()
     {
-        GameObject temporaryMeteorite = Instantiate(meteoritePrefab) as GameObject;
+        GameObject temporaryMeteorite = Instantiate(meteoritePrefab, this.transform);
         temporaryMeteorite.GetComponent<MeteoriteController>().addSpeed(new Vector2(Random.Range(-5f, 5f), Random.Range(-1f, -5f)));
     }
 }

@@ -34,12 +34,6 @@ public class MeteoriteController : MonoBehaviour
         Debug.DrawRay(transform.position, rb2d.velocity, Color.red);
     }
 
-    private void spawnMarker()
-    {
-        Debug.Log("Spawning marker");
-        RaycastHit2D groundHit = Physics2D.Raycast(transform.position, rb2d.velocity, groundLayer);
-    }
-
     private void explode()
     {
         // Simulates kill area by generating a sphere and getting any objects that are inside
@@ -55,7 +49,7 @@ public class MeteoriteController : MonoBehaviour
                     playerReference.damagePlayer(100);
                 else  
                     return;
-                CinemachineCameraShake.Instance.shakeCamera(2f, 2f);
+                CinemachineCameraShake.Instance.shakeCamera(2f, 1f);
             } 
         }
     }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DinosaurSpawner : MonoBehaviour
@@ -17,6 +15,6 @@ public class DinosaurSpawner : MonoBehaviour
 
     private void spawnDinosaur()
     {
-        GameObject temporaryDinosaur = Instantiate(dinosaurPrefab) as GameObject;
+        GameObject temporaryDinosaur = Instantiate(dinosaurPrefab, this.transform) as GameObject;
     }
 }
