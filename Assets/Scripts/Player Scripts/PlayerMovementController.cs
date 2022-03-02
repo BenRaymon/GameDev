@@ -69,7 +69,7 @@ public class PlayerMovementController : MonoBehaviour
     void FixedUpdate()
     {
         // checks to see if the player is pressing any of the movement keys
-        if((horizontalMovement > .1f || horizontalMovement < -.1f))
+        if((horizontalMovement > .1f || horizontalMovement < -.1f) && chargeCounter < .5f)
             movePlayer();
         
     }

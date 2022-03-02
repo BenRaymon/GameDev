@@ -51,7 +51,7 @@ public class EnemyController : MonoBehaviour
     {
         // Moves enemy only if the distance to player is less than the pre-set chase distance.
         if((Vector2.Distance(transform.position, playerLocation.position) < chaseDistance) && playerDistance.normalized != Vector2.zero)
-            rb2d.AddForce(2*playerDistance.normalized, ForceMode2D.Impulse);
+            rb2d.AddForce(2f*playerDistance.normalized, ForceMode2D.Impulse);
     }
 
     // Flips enemy using localscale instead of sprite.flipx so that the circle collider maintains its position

@@ -4078,6 +4078,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2959409956381909709, guid: d73e9071a4b5c524d9273363e01ad421, type: 3}
+      propertyPath: angle
+      value: 235
+      objectReference: {fileID: 0}
+    - target: {fileID: 2959409956381909709, guid: d73e9071a4b5c524d9273363e01ad421, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1492639408}
