@@ -12,7 +12,7 @@ TODO
 
 public class MeteoriteController : MonoBehaviour
 {
-    private float areaOfImpact = 5f;
+    private float AREA_OF_IMPACT = 5f;
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask groundLayer;
     private Rigidbody2D rb2d;
@@ -37,7 +37,7 @@ public class MeteoriteController : MonoBehaviour
     private void explode()
     {
         // Simulates kill area by generating a sphere and getting any objects that are inside
-        Collider2D[] objectsHit = Physics2D.OverlapCircleAll(transform.position, areaOfImpact, playerLayer);
+        Collider2D[] objectsHit = Physics2D.OverlapCircleAll(transform.position, AREA_OF_IMPACT, playerLayer);
 
         // Checks every object inside the 'kill sphere.' Could be redundant as the player is the only object with the Player layer.
         foreach(Collider2D obj in objectsHit)

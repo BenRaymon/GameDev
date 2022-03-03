@@ -15,7 +15,7 @@ TODO
 public class EnemyController : MonoBehaviour
 {
     public int enemyHealth = 100;
-    private float chaseDistance = 10f;
+    private float CHASE_DISTANCE = 10f;
     private Vector2 playerDistance;
 
     private GameObject player;
@@ -50,7 +50,7 @@ public class EnemyController : MonoBehaviour
     void FixedUpdate()
     {
         // Moves enemy only if the distance to player is less than the pre-set chase distance.
-        if((Vector2.Distance(transform.position, playerLocation.position) < chaseDistance) && playerDistance.normalized != Vector2.zero)
+        if((Vector2.Distance(transform.position, playerLocation.position) < CHASE_DISTANCE) && playerDistance.normalized != Vector2.zero)
             rb2d.AddForce(2f*playerDistance.normalized, ForceMode2D.Impulse);
     }
 

@@ -58,9 +58,9 @@ public class PlayerMovementController : MonoBehaviour
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
 
-        checkForJump(); //input listeners
-
         updatePlayerState(); 
+
+        checkForJump(); //input listeners
 
         if(playerState == characterState.falling)
             regularAttack();
