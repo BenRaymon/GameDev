@@ -23,11 +23,6 @@ public class PlayerMovementController : MonoBehaviour
     private float MOVE_SPEED = 2f;
     private float JUMP_FORCE = 40f;
 
-    // Setup a timer before entering fall state
-    //private float timeBeforeFall = 0.08f;
-    //private float timeBeforeFallDelta;
-
-
     //Global variable for 
     private bool isChargedAttack = false;
     private float chargeCounter = 0f;
@@ -42,6 +37,9 @@ public class PlayerMovementController : MonoBehaviour
     private TextMesh playerStateText;
     private characterState playerState;
 
+    // Setup a timer before entering fall state
+    //private float timeBeforeFall = 0.08f;
+    //private float timeBeforeFallDelta;
 
     void Start()
     {
@@ -58,8 +56,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         horizontalMovement = Input.GetAxisRaw("Horizontal");
 
-        checkForJump(); //input listeners
-
+        checkForJump();
         updatePlayerState(); 
 
         if(playerState == characterState.falling)
@@ -74,32 +71,20 @@ public class PlayerMovementController : MonoBehaviour
         
     }
 
-    //Input listeners for Space Bar
-    private void checkForJump()
-    {
+    //This function takes in 
+    //  an origin vector (the starting position of the ray)
+    //  a direction vector (the direction to cast the ray)
+    //  a distance float (the distance to cast the ray)
+    //The function returns the object hit by the ray (or null if no object is hit)  
+    private GameObject collisionDetector(Vector2 origin, Vector2 direction, float distance){
+        RaycastHit2D rayCast = Physics2D.Raycast(origin, direction, distance);
+        GameObject objectHit = rayCast.collider?.gameObject;
 
-        if(Input.GetKey(KeyCode.Space) && isGrounded())
-        {
-            if (chargeCounter < 1.8f)
-                chargeCounter += Time.deltaTime;
-            
-            // forces a jump if held too long (2 seconds)
-            if(chargeCounter > 1.8f)
-            {
-                jumpPlayer(true, chargeCounter);
-                isChargedAttack = true;
-                chargeCounter = 0f;
-            }
-        }
-
-        if(Input.GetKeyUp(KeyCode.Space) && isGrounded())
-        {
-            jumpPlayer(false, chargeCounter);
-            chargeCounter = 0f;
-        }
+        return objectHit;
     }
 
-    //This function moves the player and flips the sprite
+    //This function moves the player left or right
+    //and flips the sprite if needed
     private void movePlayer()
     {
         // flips sprite so it is facing the direction of movement
@@ -109,6 +94,29 @@ public class PlayerMovementController : MonoBehaviour
             playerSprite.flipX = true;
 
         rb2d.AddForce(new Vector2(horizontalMovement * MOVE_SPEED, 0f), ForceMode2D.Impulse);
+    }
+
+    //Input listeners for Space Bar
+    private void checkForJump()
+    {
+        GameObject isGrounded = collisionDetector(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + GROUND_BUFFER);
+
+        if(Input.GetKey(KeyCode.Space) && isGrounded){
+            if (chargeCounter < 1.8f)
+                chargeCounter += Time.deltaTime;
+            
+            // forces a jump if held too long (2 seconds)
+            if(chargeCounter > 1.8f){
+                jumpPlayer(true, chargeCounter);
+                isChargedAttack = true;
+                chargeCounter = 0f;
+            }
+        }
+
+        if(Input.GetKeyUp(KeyCode.Space) && isGrounded){
+            jumpPlayer(false, chargeCounter);
+            chargeCounter = 0f;
+        }
     }
 
     //This function jumps the player 
@@ -123,20 +131,8 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-    private bool isGrounded()
-    {
-        // Tests if a player is grounded by casting a ray and checking if the ray is colliding with any existing colliders.
-
-        // Casts a ray from the center-bottom of the player's box collider
-        RaycastHit2D rayCastGroundTest = Physics2D.Raycast(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + GROUND_BUFFER);
-
-        return rayCastGroundTest;
-    }
-
-    // 
-    // Uses the same raycast as isGrounded. Retrieves whatever gameobject collides with the raycast and checks if it is an enemy.
-    // If it is an enemy, get the enemycontroller script component of that gameobject and calls the function takeDamage.
-    //
+    // This function checks for a collision with an enemy (using Raycast)
+    // and attacks the enemy if there is a collision
     private void regularAttack()
     {
         //Check for collision on the left side of the player
@@ -153,7 +149,7 @@ public class PlayerMovementController : MonoBehaviour
 
     }
 
-    //creates a circle around the player and if any enemies are in the circle they take full damage (die)
+    //creates a circle around the player and if any enemies are in the circle they take full damage
     private void chargedAttack()
     {
         Collider2D[] objectsHit = Physics2D.OverlapCircleAll(transform.position, 5f, targetLayer);
@@ -167,18 +163,6 @@ public class PlayerMovementController : MonoBehaviour
         }
         CinemachineCameraShake.Instance.shakeCamera(1f, 1f);
         isChargedAttack = false;
-    }
-
-    //This function takes in 
-    //  an origin vector (the starting position of the ray)
-    //  a direction vector (the direction to cast the ray)
-    //  a distance float (the distance to cast the ray)
-    //The function returns the object hit by the ray (or null if no object is hit)  
-    private GameObject collisionDetector(Vector2 origin, Vector2 direction, float distance){
-        RaycastHit2D rayCast = Physics2D.Raycast(origin, direction, distance);
-        GameObject objectHit = rayCast.collider?.gameObject;
-
-        return objectHit;
     }
 
     private void updatePlayerState()
