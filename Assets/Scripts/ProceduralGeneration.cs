@@ -78,10 +78,6 @@ public class ProceduralGeneration : MonoBehaviour
                     {
                         neighorCount += oldMap[x + b.x, y + b.y];
                     }
-                    // else
-                    // {
-                    //     neighorCount++;
-                    // }
                 }
                 if(oldMap[x,y] == 1)
                 {
@@ -125,6 +121,23 @@ public class ProceduralGeneration : MonoBehaviour
         }
     }
 
+    public Vector2 findLocation()
+    {
+        Vector2 spawnLocation = new Vector2(0,0);
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                if(terrainMap[x,y] == 1)
+                {
+                    spawnLocation = new Vector2(-x + width/2, -y + height/2);
+                    Debug.Log("TEST: " + spawnLocation);
+                }
+            }
+        }
+        return spawnLocation;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -135,6 +148,10 @@ public class ProceduralGeneration : MonoBehaviour
         if(Input.GetMouseButtonDown(1))
         {
             clearMap(true);
+        }
+        if(Input.GetMouseButtonDown(2))
+        {
+            findLocation();
         }
     }
 }
