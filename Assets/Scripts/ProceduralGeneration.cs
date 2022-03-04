@@ -138,20 +138,25 @@ public class ProceduralGeneration : MonoBehaviour
         return spawnLocation;
     }
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            doSim(numRepeats);
-        }
-        if(Input.GetMouseButtonDown(1))
-        {
-            clearMap(true);
-        }
-        if(Input.GetMouseButtonDown(2))
-        {
-            findLocation();
-        }
+        doSim(5);
     }
+
+    // // Update is called once per frame
+    // void Update()
+    // {
+    //     if(Input.GetMouseButtonDown(0))
+    //     {
+    //         doSim(numRepeats);
+    //     }
+    //     if(Input.GetMouseButtonDown(1))
+    //     {
+    //         clearMap(true);
+    //     }
+    //     if(Input.GetMouseButtonDown(2))
+    //     {
+    //         findLocation();
+    //     }
+    // }
 }

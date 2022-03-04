@@ -1,5 +1,4 @@
 using UnityEngine;
-using Cinemachine;
 
 public class SpawnPlayer : MonoBehaviour
 {
@@ -9,16 +8,7 @@ public class SpawnPlayer : MonoBehaviour
 
     void Start()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-            spawnPlayer();
-        }
+        Invoke("spawnPlayer", .5f);
     }
 
     private void spawnPlayer()
