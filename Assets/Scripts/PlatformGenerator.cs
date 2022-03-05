@@ -12,7 +12,6 @@ public class PlatformGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        setTerrain("Volcanic Platform"); // initially sets the spawned platforms to volcanic
         platformWidth = thePlatform.GetComponent<BoxCollider2D>().size.x;
     }
 

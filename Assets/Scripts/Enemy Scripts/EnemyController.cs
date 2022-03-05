@@ -15,7 +15,7 @@ TODO
 public class EnemyController : MonoBehaviour
 {
     public int enemyHealth = 100;
-    private float CHASE_DISTANCE = 10f;
+    private float CHASE_DISTANCE = 15f;
     private Vector2 playerDistance;
 
     private GameObject player;

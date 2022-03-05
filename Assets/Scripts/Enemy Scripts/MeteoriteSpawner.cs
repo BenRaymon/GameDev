@@ -17,12 +17,21 @@ public class MeteoriteSpawner : MonoBehaviour
     private GameObject player;
     private float time = 2f;
 
+    void Start()
+    {
+        player = GameObject.FindWithTag("Player");
+    }
+
     // Update is called once per frame
     void Update()
     {
-        player = GameObject.FindWithTag("Player");
+        if(GameTimer.currentAge == "Volcanic Platform")
+            meteoriteTimer();
+    }
 
-        // Spawns a meteorite every 2 seconds
+    private void meteoriteTimer()
+    {
+        // // Spawns a meteorite every 2 seconds
         if(time > 0f)
             time -= Time.deltaTime;
         else
