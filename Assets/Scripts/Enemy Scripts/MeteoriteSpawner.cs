@@ -15,14 +15,19 @@ public class MeteoriteSpawner : MonoBehaviour
     public GameObject meteoritePrefab;
 
     private GameObject player;
+    private float time = 2f;
 
     // Update is called once per frame
     void Update()
     {
         player = GameObject.FindWithTag("Player");
 
-        if(Input.GetKeyDown(KeyCode.E))
+        // Spawns a meteorite every 2 seconds
+        if(time > 0f)
+            time -= Time.deltaTime;
+        else
         {
+            time = 2f;
             spawnMeteorite();
         }
     }

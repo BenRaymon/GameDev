@@ -161,7 +161,7 @@ public class PlayerMovementController : MonoBehaviour
                 obj.GetComponent<EnemyController>().takeDamage(100);
             } 
         }
-        CinemachineCameraShake.Instance.shakeCamera(1f, 1f);
+        CinemachineCameraShake.Instance.shakeCamera(.5f, .2f);
         isChargedAttack = false;
     }
 
@@ -199,7 +199,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             playerState = characterState.chargingJump;
             playerStateText.text = "charging";
-            CinemachineCameraShake.Instance.shakeCamera(chargeCounter, .1f);
+            CinemachineCameraShake.Instance.shakeCamera(chargeCounter/10, .1f);
         }
 
         //if(Mathf.Approximately(rb2d.velocity.y, 0f))
