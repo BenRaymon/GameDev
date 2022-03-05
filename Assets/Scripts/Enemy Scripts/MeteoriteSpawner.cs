@@ -25,7 +25,7 @@ public class MeteoriteSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameTimer.currentAge == "Volcanic Platform")
+        if(GameController.currentAge == "Volcanic Platform")
             meteoriteTimer();
     }
 
