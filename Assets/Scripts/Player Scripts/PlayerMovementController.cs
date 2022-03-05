@@ -99,9 +99,11 @@ public class PlayerMovementController : MonoBehaviour
     //Input listeners for Space Bar
     private void checkForJump()
     {
-        GameObject isGrounded = collisionDetector(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + GROUND_BUFFER);
+        // GameObject isGrounded = collisionDetector(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + GROUND_BUFFER);
+        GameObject isLeftGrounded = collisionDetector(playerCollider.bounds.min, Vector2.down, GROUND_BUFFER);
+        GameObject isRightGrounded = collisionDetector(new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.min.y), Vector2.down, GROUND_BUFFER);
 
-        if(Input.GetKey(KeyCode.Space) && isGrounded){
+        if(Input.GetKey(KeyCode.Space) && (isLeftGrounded || isRightGrounded)){
             if (chargeCounter < 1.8f)
                 chargeCounter += Time.deltaTime;
             
@@ -113,7 +115,7 @@ public class PlayerMovementController : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyUp(KeyCode.Space) && isGrounded){
+        if(Input.GetKeyUp(KeyCode.Space) && (isLeftGrounded || isRightGrounded)){
             jumpPlayer(false, chargeCounter);
             chargeCounter = 0f;
         }
