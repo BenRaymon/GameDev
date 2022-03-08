@@ -129,11 +129,8 @@ public class ProceduralGeneration : MonoBehaviour
 
         return newMap;
     }
-<<<<<<< HEAD
         
         
-=======
->>>>>>> c76c7e0 (improved procedural generation, added rule tile.)
     public Vector2 findLocation()
     {
         Vector2 spawnLocation = new Vector2(0,0);
