@@ -14,18 +14,36 @@ public class MeteoriteSpawner : MonoBehaviour
 {
     public GameObject meteoritePrefab;
 
+    private GameObject player;
+    private float time = 2f;
+
+    void Start()
+    {
+        player = GameObject.FindWithTag("Player");
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if(GameController.currentAge == "Volcanic Platform")
+            meteoriteTimer();
+    }
+
+    private void meteoriteTimer()
+    {
+        // // Spawns a meteorite every 2 seconds
+        if(time > 0f)
+            time -= Time.deltaTime;
+        else
         {
+            time = 2f;
             spawnMeteorite();
         }
     }
 
     private void spawnMeteorite()
     {
-        GameObject temporaryMeteorite = Instantiate(meteoritePrefab, this.transform);
+        GameObject temporaryMeteorite = Instantiate(meteoritePrefab, player.transform.position + new Vector3(8, 8, 0), player.transform.rotation) as GameObject;
         temporaryMeteorite.GetComponent<MeteoriteController>().addSpeed(new Vector2(Random.Range(-5f, 5f), Random.Range(-1f, -5f)));
     }
 }
