@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Text;
 
 public class ProceduralGeneration : MonoBehaviour
 {
@@ -19,8 +20,10 @@ public class ProceduralGeneration : MonoBehaviour
     public int mapSizeColumn; // Number of columns to generate in the grid.
     public Tilemap terrain; // Tilemap to place tiles on. Corresponds with a populated cell with a value of 1 in the grid.
     public Tilemap background; // Tilemap to place tiles on. Corresponds with a dead cell with a value of 0 in the grid.
-    public Tile terrainTile; // Tile to place.
+    public RuleTile terrainTile; // Tile to place.
     public Tile backgroundTile; // tile to place.
+
+    [SerializeField] private Grid tileGrid;
 
     private int[,] terrainMap; // 2D Array grid representing the map to be generated.
 
@@ -46,9 +49,13 @@ public class ProceduralGeneration : MonoBehaviour
             for(int column = 0; column < mapSizeColumn; column++)
             {
                 if(terrainMap[row,column] == 1)
-                    terrain.SetTile(new Vector3Int(-row + mapSizeRow/2, -column + mapSizeColumn/2, 0), terrainTile);
+                {
+                    Vector3Int test = new Vector3Int(row, column, 0);
+                    terrain.SetTile(new Vector3Int(row, column, 0), terrainTile); // Paints from the left, bottom to top
+                    // Debug.Log("Painting from: " + test);
+                }
                 else
-                    terrain.SetTile(new Vector3Int(-row + mapSizeRow/2, -column + mapSizeColumn/2, 0), backgroundTile);
+                    terrain.SetTile(new Vector3Int(row, column, 0), backgroundTile);
             }
         }
     }
@@ -61,8 +68,10 @@ public class ProceduralGeneration : MonoBehaviour
         {
             for(int y = 0; y < mapSizeColumn; y++)
             {
-                // Can use if(y < 10) or similar to generate solid layer on certain sides.
-                terrainMap[x,y] = Random.Range(1, 101) < initialChance ? 1 : 0;
+                if(y > mapSizeColumn - 2)
+                    terrainMap[x,y] = 1;
+                else
+                    terrainMap[x,y] = Random.Range(1, 101) < initialChance ? 1 : 0;
             }
         }
     }
@@ -120,22 +129,42 @@ public class ProceduralGeneration : MonoBehaviour
 
         return newMap;
     }
+<<<<<<< HEAD
         
         
+=======
+>>>>>>> c76c7e0 (improved procedural generation, added rule tile.)
     public Vector2 findLocation()
     {
         Vector2 spawnLocation = new Vector2(0,0);
-        for(int x = 0; x < mapSizeRow; x++)
+        for(int row = 0; row < mapSizeRow; row++)
         {
-            for(int y = 0; y < mapSizeColumn; y++)
+            for(int column = mapSizeColumn - 1; column >= 0; column--)
             {
-                if(terrainMap[x,y] == 1)
+                if(terrainMap[row,column] == 1)
                 {
-                    spawnLocation = new Vector2(-x + mapSizeRow/2, -y + mapSizeColumn/2);
-                    Debug.Log("TEST: " + spawnLocation);
+                    Debug.Log(terrain.GetTile(new Vector3Int(row, column, 0)));
+                    spawnLocation = new Vector2(row,column);
+                    Debug.Log("Spawning: " + spawnLocation);
+                    return spawnLocation;
                 }
             }
         }
         return spawnLocation;
+    }
+
+    private void printArray()
+    {
+        StringBuilder sb = new StringBuilder();
+        for(int x = 0; x < mapSizeRow; x++)
+        {
+            for(int y = 0; y < mapSizeColumn; y++)
+            {
+                sb.Append(terrainMap[x,y]);
+                sb.Append(" ");
+            }
+            sb.AppendLine();
+        }
+        Debug.Log(sb.ToString());
     }
 }

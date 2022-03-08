@@ -8,13 +8,13 @@ public class SpawnPlayer : MonoBehaviour
 
     void Start()
     {
-        Invoke("spawnPlayer", .5f);
+        Invoke("spawnPlayer", 1f);
     }
 
     private void spawnPlayer()
     {
         Vector2 spawnPos = terrainSpawner.GetComponent<ProceduralGeneration>().findLocation();
-        spawnPos = new Vector2(spawnPos.x + 3, spawnPos.y + 8);
+        spawnPos = new Vector2(spawnPos.x + 5, spawnPos.y + 5);
         transform.position = spawnPos;
         GameObject Player = Instantiate(playerPrefab, this.transform);
     }
