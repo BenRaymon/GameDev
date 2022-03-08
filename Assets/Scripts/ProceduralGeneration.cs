@@ -23,6 +23,11 @@ public class ProceduralGeneration : MonoBehaviour
     public RuleTile terrainTile; // Tile to place.
     public Tile backgroundTile; // tile to place.
 
+
+    public RuleTile groundTerrain;
+    public RuleTile volcanoTerrain;
+
+
     [SerializeField] private Grid tileGrid;
 
     private int[,] terrainMap; // 2D Array grid representing the map to be generated.
@@ -50,6 +55,11 @@ public class ProceduralGeneration : MonoBehaviour
             {
                 if(terrainMap[row,column] == 1)
                 {
+                    if(row > mapSizeRow/2)
+                        terrainTile = groundTerrain;
+                    else
+                        terrainTile = volcanoTerrain;
+
                     Vector3Int test = new Vector3Int(row, column, 0);
                     terrain.SetTile(new Vector3Int(row, column, 0), terrainTile); // Paints from the left, bottom to top
                     // Debug.Log("Painting from: " + test);

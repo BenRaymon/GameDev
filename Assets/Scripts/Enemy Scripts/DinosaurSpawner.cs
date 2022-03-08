@@ -15,8 +15,12 @@ public class DinosaurSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameController.currentAge == "Grass Platform")
+        if(!player)
+            player = GameObject.FindWithTag("Player");
+        
+        if(GameController.currentAge == "Grass Terrain 2"){
             dinosaurTimer();
+        }
     }
 
     private void dinosaurTimer()

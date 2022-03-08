@@ -7,17 +7,17 @@ public class GameController : MonoBehaviour
     private float timeRemaining = 3f;
     [SerializeField] private GameObject timeDisplay; // used to disable timer display
 
-    [SerializeField] private GameObject platformGen; // Used to access platformgenerator object
-    private PlatformGenerator platformGenScript; // Used to access platformgenerator script
-    private string[] gameAges = {"Volcanic Platform", "Grass Platform", "END"};
+    [SerializeField] private GameObject procGen;
+    private ProceduralGeneration procGenScript;
+    private string[] gameAges = {"Grass Terrain 2", "Volcanic Terrain", "END"};
     private int count = 0;
 
     public static string currentAge;
 
     void Awake()
     {
-        platformGenScript = platformGen.GetComponent<PlatformGenerator>();
-        platformGenScript.setTerrain(gameAges[count]); // initially sets the spawned platforms to volcanic
+        //procGenScript = procGen.GetComponent<ProceduralGeneration>();
+        //procGenScript.setTerrain(gameAges[count]);
         currentAge = gameAges[count];
         count += 1;
     }
@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if(timeRemaining > 0f)
         {
             // changes display text
@@ -42,7 +43,7 @@ public class GameController : MonoBehaviour
 
             if(currentAge != "END")
             {
-                platformGenScript.setTerrain(gameAges[count]);
+                procGenScript.setTerrain(gameAges[count]);
                 count += 1;
                 timeRemaining = 3f;
             }
@@ -52,5 +53,6 @@ public class GameController : MonoBehaviour
                 Time.timeScale = 0f;
             }
         }
+        */
     }
 }
