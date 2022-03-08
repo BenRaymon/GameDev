@@ -35,10 +35,10 @@ public class ProceduralGeneration : MonoBehaviour
             terrainMap = populationCheck(terrainMap);
         }
 
-        // Fills cells with appropriate tile based on whether the cell is alive or dead.
         paintCells();
     }
 
+    // Fills cells with appropriate tile based on whether the cell is alive or dead.
     private void paintCells()
     {
         for(int row = 0; row < mapSizeRow; row++)
@@ -53,6 +53,8 @@ public class ProceduralGeneration : MonoBehaviour
         }
     }
 
+    //Populates the terrainMap with 1s and 0s based on an initialChance value
+    //there should theoretically be an initialChance # of 1s for every 100 tiles
     private void initialPopulation()
     {
         for(int x = 0; x < mapSizeRow; x++)
@@ -65,6 +67,9 @@ public class ProceduralGeneration : MonoBehaviour
         }
     }
 
+    //For each cell in the grid 
+    // count the number of neighbors that are in the map bounds that also have tiles (oldMap[x][y]=1)
+    // the number of populatedNeighbors determines if the cell should be alive or dead
     private int[,] populationCheck(int[,] oldMap)
     {
         int[,] newMap = new int[mapSizeRow, mapSizeColumn];
@@ -82,7 +87,8 @@ public class ProceduralGeneration : MonoBehaviour
                     // Checks to see if current cell is the original cell being looked at. If it is, skip the current iteration.
                     if(cell.x == 0 && cell.y == 0)
                         continue;
-                    // Checks to see if the surrounding neighbor cells are inbound. If they are, add the state of the neighbors to populatedNeighborCount.
+                    // Checks to see if the surrounding neighbor cells are within the map bounds
+                    // If they are, add the state of the neighbors to populatedNeighborCount.
                     // No subtraction is necessary to count living cells because non-living cells are set at 0.
                     if( (row + cell.x >= 0 && row + cell.x < mapSizeRow) && (column + cell.y >= 0 && column + cell.y < mapSizeColumn) )
                         populatedNeighborCount += oldMap[row + cell.x, column + cell.y];
@@ -114,7 +120,9 @@ public class ProceduralGeneration : MonoBehaviour
 
         return newMap;
     }
-        public Vector2 findLocation()
+        
+        
+    public Vector2 findLocation()
     {
         Vector2 spawnLocation = new Vector2(0,0);
         for(int x = 0; x < mapSizeRow; x++)
