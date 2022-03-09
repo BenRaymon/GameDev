@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
 
     [SerializeField] private GameObject procGen;
     private ProceduralGeneration procGenScript;
-    private string[] gameAges = {"Grass Terrain 2", "Volcanic Terrain", "END"};
+    private string[] gameAges = {"Volcanic Terrain", "Grass Terrain 2", "END"};
     private int count = 0;
 
     public static string currentAge;
@@ -17,7 +17,6 @@ public class GameController : MonoBehaviour
     void Awake()
     {
         //procGenScript = procGen.GetComponent<ProceduralGeneration>();
-        //procGenScript.setTerrain(gameAges[count]);
         currentAge = gameAges[count];
         count += 1;
     }

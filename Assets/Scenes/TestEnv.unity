@@ -704,7 +704,7 @@ MonoBehaviour:
   backgroundTile: {fileID: 0}
   groundTerrain: {fileID: 11400000, guid: e3ca66c949fed724b8ff50d9238ac6ac, type: 2}
   volcanoTerrain: {fileID: 11400000, guid: 2618a1ae84d409b438a7d4a3ea29b736, type: 2}
-  tileGrid: {fileID: 0}
+  tileGrid: {fileID: 1883914601}
 --- !u!4 &1492486377
 Transform:
   m_ObjectHideFlags: 0
