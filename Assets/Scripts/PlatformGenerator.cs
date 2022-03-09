@@ -8,6 +8,7 @@ public class PlatformGenerator : MonoBehaviour
 
     private float platformWidth;
     private float groundHeight = 0f;
+    private float platformCount;
     
     // Start is called before the first frame update
     void Start()
@@ -21,7 +22,11 @@ public class PlatformGenerator : MonoBehaviour
         if(transform.position.x < generationPoint.position.x){
             transform.position = new Vector2(transform.position.x + platformWidth + distanceBetween, groundHeight);
             GameObject temporaryPlatform = Instantiate(thePlatform, transform.position, transform.rotation) as GameObject; // Instantiates as gameobject for Destroy()
-            Destroy(temporaryPlatform, 5f); // Destroys platform in ~5 seconds
+            //Destroy(temporaryPlatform, 5f); // Destroys platform in ~5 seconds
+            platformCount += 1;
+        }
+        if(platformCount >= 5){
+            setTerrain("Grass Platform");
         }
     }
 

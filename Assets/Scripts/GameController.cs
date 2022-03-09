@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if(timeRemaining > 0f)
         {
             // changes display text
@@ -52,5 +53,6 @@ public class GameController : MonoBehaviour
                 Time.timeScale = 0f;
             }
         }
+        */
     }
 }
