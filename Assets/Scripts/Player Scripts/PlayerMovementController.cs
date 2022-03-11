@@ -22,8 +22,10 @@ public class PlayerMovementController : MonoBehaviour
     // General player stats
     private float MOVE_SPEED = 2f;
     private float JUMP_FORCE = 40f;
+    private float COYOTE_TIME = .15f;
+    private float coyoteTimer;
 
-    //Global variable for 
+    //Setup variables for charged jump and charged jump attacks
     private bool isChargedAttack = false;
     private float chargeCounter = 0f;
 
@@ -101,6 +103,16 @@ public class PlayerMovementController : MonoBehaviour
     {
         GameObject isGrounded = collisionDetector(playerCollider.bounds.center, Vector2.down, playerCollider.bounds.extents.y + GROUND_BUFFER);
 
+        // Timer for coyote time. The player has a grace period after they are no longer grounded where a jump will still be counted.
+        if(isGrounded)
+        {
+            coyoteTimer = COYOTE_TIME;
+        }
+        else
+        {
+            coyoteTimer -= Time.deltaTime;
+        }
+
         if(Input.GetKey(KeyCode.Space) && isGrounded){
             if (chargeCounter < 1.8f)
                 chargeCounter += Time.deltaTime;
@@ -113,9 +125,10 @@ public class PlayerMovementController : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyUp(KeyCode.Space) && isGrounded){
+        if(Input.GetKeyUp(KeyCode.Space) && (isGrounded || coyoteTimer > 0f)){
             jumpPlayer(false, chargeCounter);
             chargeCounter = 0f;
+            coyoteTimer = 0f;
         }
     }
 
