@@ -4,27 +4,41 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public TMP_Text timer;
-    private float timeRemaining = 3f;
+
+    private float TIME_BETWEEN_AGES = 20f;
+    private float timeRemaining = 0f;
+
     [SerializeField] private GameObject timeDisplay; // used to disable timer display
+    [SerializeField] private GameObject proceduralGenerator;
 
-    [SerializeField] private GameObject procGen;
-    private ProceduralGeneration procGenScript;
-    private string[] gameAges = {"Volcanic Terrain", "Grass Terrain 2", "END"};
+    private string[] gameAges = {"Volcanic Terrain", "Grass Terrain", "END"};
     private int count = 0;
-
     public static string currentAge;
 
     void Awake()
     {
-        //procGenScript = procGen.GetComponent<ProceduralGeneration>();
+        timeRemaining = TIME_BETWEEN_AGES;
+
         currentAge = gameAges[count];
-        count += 1;
+        count++;
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*
+        if(currentAge != "END")
+        {
+            checkGame();
+        }
+        else
+        {
+            endGame();
+        }
+    }
+
+    private void checkGame()
+    {
+        Debug.Log("Checking game");
         if(timeRemaining > 0f)
         {
             // changes display text
@@ -38,20 +52,17 @@ public class GameController : MonoBehaviour
         else
         {    
             currentAge = gameAges[count]; // sets current age
-            Debug.Log("Change age to: " + gameAges[count]);
+            Debug.Log("Change age to: " + currentAge);
 
-            if(currentAge != "END")
-            {
-                procGenScript.setTerrain(gameAges[count]);
-                count += 1;
-                timeRemaining = 3f;
-            }
-            else
-            {
-                Debug.Log("WINNER!");
-                Time.timeScale = 0f;
-            }
+            proceduralGenerator.GetComponent<ProceduralGeneration>().setTerrain(currentAge);
+            count += 1;
+            timeRemaining = TIME_BETWEEN_AGES;
         }
-        */
+    }
+
+    private void endGame()
+    {
+        Debug.Log("WINNER!");
+        //Time.timeScale = 0f;
     }
 }

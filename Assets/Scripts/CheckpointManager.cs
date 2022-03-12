@@ -2,6 +2,14 @@ using UnityEngine;
 
 public class CheckpointManager : MonoBehaviour
 {
+
+	/*
+
+	BUG: An old bug where the player entered an infinite falling state after jumping and immediately running on terrain was re-introduced.
+		NOTE: Could be because the level01merge branch is behind
+
+	*/
+
 	private int counter = -1; // set to -1 so that the first platform on which the player hits the checkpoint is not deleted.
 	[SerializeField] private GameObject proceduralGenerator;
 

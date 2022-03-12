@@ -12,7 +12,7 @@ TODO
 
 public class MeteoriteController : MonoBehaviour
 {
-    private float AREA_OF_IMPACT = 5f;
+    private float AREA_OF_IMPACT = 3f;
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private LayerMask groundLayer;
     private Rigidbody2D rb2d;

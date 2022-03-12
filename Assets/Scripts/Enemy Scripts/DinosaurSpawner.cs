@@ -2,6 +2,17 @@ using UnityEngine;
 
 public class DinosaurSpawner : MonoBehaviour
 {
+
+    /*
+
+    NOTE: Dinosaurs will spawn even when the player has not "entered" the grass terrain.
+          Because of how the generation works, the player could be 100 blocks behind the current
+          terrain.
+    FIX:  Add a check for what rule tile the player is currently on. Only spawn dinosaurs if the
+          RuleTile matches the grass terrain.
+
+    */
+
     public GameObject dinosaurPrefab;
 
     private GameObject player;
@@ -18,7 +29,7 @@ public class DinosaurSpawner : MonoBehaviour
         if(!player)
             player = GameObject.FindWithTag("Player");
         
-        if(GameController.currentAge == "Grass Terrain 2"){
+        if(GameController.currentAge == "Grass Terrain"){
             dinosaurTimer();
         }
     }
@@ -30,7 +41,7 @@ public class DinosaurSpawner : MonoBehaviour
         else
         {
             time = 3f;
-            spawnDinosaur();
+            //spawnDinosaur();
         }
     }
 

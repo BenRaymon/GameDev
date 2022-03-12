@@ -39,6 +39,20 @@ public class ProceduralGeneration : MonoBehaviour
     void Awake()
     {
         generateMap();
+        setTerrain("init");
+    }
+
+    public void setTerrain(string platform)
+    {
+        switch(platform)
+        {
+            case ("Grass Terrain"):
+                terrainTile = groundTerrain;
+                break;
+            default:
+                terrainTile = volcanoTerrain;
+                break;
+        }
     }
 
     public void generateMap()
