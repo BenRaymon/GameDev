@@ -27,12 +27,21 @@ public class ProceduralGeneration : MonoBehaviour
     public RuleTile groundTerrain;
     public RuleTile volcanoTerrain;
 
+    // Variable to keep track of where new platforms should be generated.
+    private int xCoord = 0;
+    private int currentDelete = 0;
 
-    [SerializeField] private Grid tileGrid;
+
+    [SerializeField] private GameObject checkpointMarker;
 
     private int[,] terrainMap; // 2D Array grid representing the map to be generated.
 
     void Awake()
+    {
+        generateMap();
+    }
+
+    public void generateMap()
     {
         terrainMap = new int[mapSizeRow, mapSizeColumn];
         initialPopulation(); // initially populates the grid with 0s and 1s representing dead and alive cells based on initialChance
@@ -43,29 +52,43 @@ public class ProceduralGeneration : MonoBehaviour
             terrainMap = populationCheck(terrainMap);
         }
 
-        paintCells();
+        paintCells(xCoord);
+
+        xCoord += mapSizeRow;
+    }
+
+    public void removeChunk()
+    {
+        Debug.Log("Current delete: " + currentDelete);
+        for(int row = currentDelete; row < currentDelete + 100; row++)
+        {
+            for(int column = 0; column < mapSizeColumn; column++)
+            {
+                Debug.Log("removing at (" + row + ")");
+                terrain.SetTile(new Vector3Int(row, column, 0), null); // removes painted tiles by setting them to null
+            }
+        }
+        currentDelete += mapSizeRow;
     }
 
     // Fills cells with appropriate tile based on whether the cell is alive or dead.
-    private void paintCells()
+    private void paintCells(int xCoord)
     {
         for(int row = 0; row < mapSizeRow; row++)
         {
+            if(row == mapSizeRow/2)
+            {
+                Debug.Log("Moving marker to (" + (row + xCoord) + "," + checkpointMarker.transform.position.y + ")");
+                checkpointMarker.transform.position = new Vector2(row + xCoord, checkpointMarker.transform.position.y);
+            }
             for(int column = 0; column < mapSizeColumn; column++)
             {
                 if(terrainMap[row,column] == 1)
                 {
-                    if(row > mapSizeRow/2)
-                        terrainTile = groundTerrain;
-                    else
-                        terrainTile = volcanoTerrain;
-
-                    Vector3Int test = new Vector3Int(row, column, 0);
-                    terrain.SetTile(new Vector3Int(row, column, 0), terrainTile); // Paints from the left, bottom to top
-                    // Debug.Log("Painting from: " + test);
+                    terrain.SetTile(new Vector3Int(row + xCoord, column, 0), terrainTile); // Paints from the left, bottom to top
                 }
                 else
-                    terrain.SetTile(new Vector3Int(row, column, 0), backgroundTile);
+                    terrain.SetTile(new Vector3Int(row + xCoord, column, 0), backgroundTile);
             }
         }
     }
@@ -150,28 +173,11 @@ public class ProceduralGeneration : MonoBehaviour
             {
                 if(terrainMap[row,column] == 1)
                 {
-                    Debug.Log(terrain.GetTile(new Vector3Int(row, column, 0)));
                     spawnLocation = new Vector2(row,column);
-                    Debug.Log("Spawning: " + spawnLocation);
                     return spawnLocation;
                 }
             }
         }
         return spawnLocation;
-    }
-
-    private void printArray()
-    {
-        StringBuilder sb = new StringBuilder();
-        for(int x = 0; x < mapSizeRow; x++)
-        {
-            for(int y = 0; y < mapSizeColumn; y++)
-            {
-                sb.Append(terrainMap[x,y]);
-                sb.Append(" ");
-            }
-            sb.AppendLine();
-        }
-        Debug.Log(sb.ToString());
     }
 }

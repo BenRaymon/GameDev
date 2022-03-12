@@ -12,7 +12,7 @@ public class PlayerMovementController : MonoBehaviour
 {
     // GetComponent Setup
     private Rigidbody2D rb2d;
-    private BoxCollider2D playerCollider;
+    private CapsuleCollider2D playerCollider;
     private Animator playerAnimator;
     private SpriteRenderer playerSprite;
     [SerializeField] private LayerMask targetLayer;
@@ -44,7 +44,7 @@ public class PlayerMovementController : MonoBehaviour
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        playerCollider = GetComponent<BoxCollider2D>();
+        playerCollider = GetComponent<CapsuleCollider2D>();
         playerStateText = GetComponentInChildren<TextMesh>();
         playerAnimator = GetComponent<Animator>();
         playerSprite = GetComponent<SpriteRenderer>();

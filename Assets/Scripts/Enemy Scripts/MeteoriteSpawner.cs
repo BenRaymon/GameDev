@@ -41,7 +41,7 @@ public class MeteoriteSpawner : MonoBehaviour
         else
         {
             time = 2f;
-            spawnMeteorite();
+            //spawnMeteorite();
         }
     }
 
