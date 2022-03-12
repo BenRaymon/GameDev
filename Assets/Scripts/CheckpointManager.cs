@@ -18,7 +18,7 @@ public class CheckpointManager : MonoBehaviour
 		// Deletes previous platforms except for the first time the player hits the checkpoint collider.
 		if(counter > 0)
 		{
-			proceduralGenerator.GetComponent<ProceduralGeneration>().removeChunk();
+			StartCoroutine(proceduralGenerator.GetComponent<ProceduralGeneration>().removeChunkCorotine());
 		}
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using System.Text;
+using System.Collections;
 
 public class ProceduralGeneration : MonoBehaviour
 {
@@ -52,27 +52,68 @@ public class ProceduralGeneration : MonoBehaviour
             terrainMap = populationCheck(terrainMap);
         }
 
-        paintCells(xCoord);
+        // paintCells(xCoord);
+        StartCoroutine(paintCellCoroutine(xCoord));
 
         xCoord += mapSizeRow; // keeps track of the current right-most x-position of the terrain generated.
     }
 
-    public void removeChunk()
+    // Coroutine version of removeChunk()
+    public IEnumerator removeChunkCorotine()
     {
         Debug.Log("Current delete: " + currentDelete);
         for(int row = currentDelete; row < currentDelete + 100; row++)
         {
             for(int column = 0; column < mapSizeColumn; column++)
             {
-                Debug.Log("removing at (" + row + ")");
                 terrain.SetTile(new Vector3Int(row, column, 0), null); // removes painted tiles by setting them to null
+                yield return null; // yields execution of function. Resumes at time returned. Null yields execution until the next update.
             }
         }
         currentDelete += mapSizeRow; // Keeps track of the next chunk's left-most x-coordinate to delete
+    
+        Debug.Log("finished removing");
     }
 
-    // Fills cells with appropriate tile based on whether the cell is alive or dead.
-    private void paintCells(int xCoord)
+    // public void removeChunk()
+    // {
+    //     Debug.Log("Current delete: " + currentDelete);
+    //     for(int row = currentDelete; row < currentDelete + 100; row++)
+    //     {
+    //         for(int column = 0; column < mapSizeColumn; column++)
+    //         {
+    //             Debug.Log("removing at (" + row + ")");
+    //             terrain.SetTile(new Vector3Int(row, column, 0), null); // removes painted tiles by setting them to null
+    //         }
+    //     }
+    //     currentDelete += mapSizeRow; // Keeps track of the next chunk's left-most x-coordinate to delete
+    // }
+
+    // // Fills cells with appropriate tile based on whether the cell is alive or dead.
+    // private void paintCells(int xCoord)
+    // {
+    //     for(int row = 0; row < mapSizeRow; row++)
+    //     {
+    //         // Moves checkpoint marker to the center point of the terrain generated.
+    //         if(row == mapSizeRow/2)
+    //         {
+    //             Debug.Log("Moving marker to (" + (row + xCoord) + "," + checkpointMarker.transform.position.y + ")");
+    //             checkpointMarker.transform.position = new Vector2(row + xCoord, checkpointMarker.transform.position.y);
+    //         }
+    //         for(int column = 0; column < mapSizeColumn; column++)
+    //         {
+    //             if(terrainMap[row,column] == 1)
+    //             {
+    //                 terrain.SetTile(new Vector3Int(row + xCoord, column, 0), terrainTile); // Paints from the left, bottom to top
+    //             }
+    //             else
+    //                 terrain.SetTile(new Vector3Int(row + xCoord, column, 0), backgroundTile);
+    //         }
+    //     }
+    // }
+
+    // Coroutine version of paintCells()
+    private IEnumerator paintCellCoroutine(int xCoord)
     {
         for(int row = 0; row < mapSizeRow; row++)
         {
@@ -90,8 +131,12 @@ public class ProceduralGeneration : MonoBehaviour
                 }
                 else
                     terrain.SetTile(new Vector3Int(row + xCoord, column, 0), backgroundTile);
+                
+                yield return null; // yields execution of function. Resumes at time returned. Null yields execution until the next update.
             }
         }
+
+        Debug.Log("Finished painting");
     }
 
     //Populates the terrainMap with 1s and 0s based on an initialChance value
