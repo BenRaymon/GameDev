@@ -27,7 +27,7 @@ public class ProceduralGeneration : MonoBehaviour
     public RuleTile groundTerrain;
     public RuleTile volcanoTerrain;
 
-    // Variable to keep track of where new platforms should be generated.
+    // Variable to keep track of where new platforms should be generated and deleted.
     private int xCoord = 0;
     private int currentDelete = 0;
 
@@ -54,7 +54,7 @@ public class ProceduralGeneration : MonoBehaviour
 
         paintCells(xCoord);
 
-        xCoord += mapSizeRow;
+        xCoord += mapSizeRow; // keeps track of the current right-most x-position of the terrain generated.
     }
 
     public void removeChunk()
@@ -68,7 +68,7 @@ public class ProceduralGeneration : MonoBehaviour
                 terrain.SetTile(new Vector3Int(row, column, 0), null); // removes painted tiles by setting them to null
             }
         }
-        currentDelete += mapSizeRow;
+        currentDelete += mapSizeRow; // Keeps track of the next chunk's left-most x-coordinate to delete
     }
 
     // Fills cells with appropriate tile based on whether the cell is alive or dead.
@@ -76,6 +76,7 @@ public class ProceduralGeneration : MonoBehaviour
     {
         for(int row = 0; row < mapSizeRow; row++)
         {
+            // Moves checkpoint marker to the center point of the terrain generated.
             if(row == mapSizeRow/2)
             {
                 Debug.Log("Moving marker to (" + (row + xCoord) + "," + checkpointMarker.transform.position.y + ")");

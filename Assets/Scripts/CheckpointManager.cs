@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CheckpointManager : MonoBehaviour
 {
-	private int counter = -1;
+	private int counter = -1; // set to -1 so that the first platform on which the player hits the checkpoint is not deleted.
 	[SerializeField] private GameObject proceduralGenerator;
 
 	// Checks for any collisions
@@ -18,10 +18,7 @@ public class CheckpointManager : MonoBehaviour
 		// Deletes previous platforms except for the first time the player hits the checkpoint collider.
 		if(counter > 0)
 		{
-			Debug.Log("removing chunk");
 			proceduralGenerator.GetComponent<ProceduralGeneration>().removeChunk();
 		}
-
-		counter++;
     }
 }
