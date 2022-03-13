@@ -75,7 +75,7 @@ public class ProceduralGeneration : MonoBehaviour
     // Coroutine version of removeChunk()
     public IEnumerator removeChunkCorotine()
     {
-        Debug.Log("Current delete: " + currentDelete);
+        //Debug.Log("Current delete: " + currentDelete);
         for(int row = currentDelete; row < currentDelete + 100; row++)
         {
             for(int column = 0; column < mapSizeColumn; column++)
@@ -86,7 +86,7 @@ public class ProceduralGeneration : MonoBehaviour
         }
         currentDelete += mapSizeRow; // Keeps track of the next chunk's left-most x-coordinate to delete
     
-        Debug.Log("finished removing");
+        //Debug.Log("finished removing");
     }
 
     // public void removeChunk()
@@ -134,7 +134,7 @@ public class ProceduralGeneration : MonoBehaviour
             // Moves checkpoint marker to the center point of the terrain generated.
             if(row == mapSizeRow/2)
             {
-                Debug.Log("Moving marker to (" + (row + xCoord) + "," + checkpointMarker.transform.position.y + ")");
+                //Debug.Log("Moving marker to (" + (row + xCoord) + "," + checkpointMarker.transform.position.y + ")");
                 checkpointMarker.transform.position = new Vector2(row + xCoord, checkpointMarker.transform.position.y);
             }
             for(int column = 0; column < mapSizeColumn; column++)
@@ -150,7 +150,7 @@ public class ProceduralGeneration : MonoBehaviour
             }
         }
 
-        Debug.Log("Finished painting");
+        //Debug.Log("Finished painting");
     }
 
     //Populates the terrainMap with 1s and 0s based on an initialChance value
@@ -222,7 +222,6 @@ public class ProceduralGeneration : MonoBehaviour
 
         return newMap;
     }
-        
         
     public Vector2 findLocation()
     {

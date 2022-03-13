@@ -38,7 +38,6 @@ public class GameController : MonoBehaviour
 
     private void checkGame()
     {
-        Debug.Log("Checking game");
         if(timeRemaining > 0f)
         {
             // changes display text
@@ -52,7 +51,7 @@ public class GameController : MonoBehaviour
         else
         {    
             currentAge = gameAges[count]; // sets current age
-            Debug.Log("Change age to: " + currentAge);
+            //Debug.Log("Change age to: " + currentAge);
 
             proceduralGenerator.GetComponent<ProceduralGeneration>().setTerrain(currentAge);
             count += 1;
@@ -62,7 +61,7 @@ public class GameController : MonoBehaviour
 
     private void endGame()
     {
-        Debug.Log("WINNER!");
+        //Debug.Log("WINNER!");
         //Time.timeScale = 0f;
     }
 }
