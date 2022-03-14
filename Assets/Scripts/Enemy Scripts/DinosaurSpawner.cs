@@ -17,9 +17,12 @@ public class DinosaurSpawner : MonoBehaviour
 
     private GameObject player;
     private float time = 3f;
+    
+    private TimePeriods timePeriods;
 
     void Start()
     {
+        timePeriods = new TimePeriods();
         player = GameObject.FindWithTag("Player");
     }
 
@@ -29,7 +32,10 @@ public class DinosaurSpawner : MonoBehaviour
         if(!player)
             player = GameObject.FindWithTag("Player");
         
-        if(GameController.currentAge == "Grass Terrain"){
+        //Start spawning dinos if the time period is Grass Terrain
+        //Based on the position of the player
+        if(player && timePeriods.getTimePeriod(player.transform.position.x) == "Grass Terrain"){
+            Debug.Log("ENTERING GRASS TERRAIN");
             dinosaurTimer();
         }
     }
@@ -41,7 +47,7 @@ public class DinosaurSpawner : MonoBehaviour
         else
         {
             time = 3f;
-            //spawnDinosaur();
+            spawnDinosaur();
         }
     }
 

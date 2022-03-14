@@ -22,9 +22,10 @@ public class ProceduralGeneration : MonoBehaviour
     public Tilemap background; // Tilemap to place tiles on. Corresponds with a dead cell with a value of 0 in the grid.
     public RuleTile terrainTile; // Tile to place.
     public Tile backgroundTile; // tile to place.
-
+    
     public RuleTile groundTerrain;
     public RuleTile volcanoTerrain;
+    private TimePeriods timePeriods;
 
     private bool firstChunk;
     [SerializeField] private SpawnPlayer playerSpawner; 
@@ -40,6 +41,8 @@ public class ProceduralGeneration : MonoBehaviour
 
     void Awake()
     {
+        timePeriods = new TimePeriods();
+
         firstChunk = false;
         setTerrain("init");
         generateMap();
@@ -145,6 +148,9 @@ public class ProceduralGeneration : MonoBehaviour
                 //Debug.Log("Moving marker to (" + (row + xCoord) + "," + checkpointMarker.transform.position.y + ")");
                 checkpointMarker.transform.position = new Vector2(row + xCoord, checkpointMarker.transform.position.y);
             }
+
+            setTerrain(timePeriods.getTimePeriod(row+xCoord));
+
             for(int column = 0; column < mapSizeColumn; column++)
             {
                 if(terrainMap[row,column] == 1)

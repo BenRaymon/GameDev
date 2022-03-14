@@ -16,9 +16,12 @@ public class MeteoriteSpawner : MonoBehaviour
 
     private GameObject player;
     private float time = 2f;
+    
+    private TimePeriods timePeriods;
 
     void Start()
     {
+        timePeriods = new TimePeriods();
         player = GameObject.FindWithTag("Player");
     }
 
@@ -28,7 +31,9 @@ public class MeteoriteSpawner : MonoBehaviour
         if(!player)
             player = GameObject.FindWithTag("Player");
         
-        if(GameController.currentAge == "Volcanic Terrain"){
+        //Start spawning meteors if the time period is Volcanic Terrain
+        //Based on the position of the player
+        if(player && timePeriods.getTimePeriod(player.transform.position.x) == "Volcanic Terrain"){
             meteoriteTimer();
         }
     }
@@ -41,7 +46,7 @@ public class MeteoriteSpawner : MonoBehaviour
         else
         {
             time = 2f;
-            //spawnMeteorite();
+            spawnMeteorite();
         }
     }
 
