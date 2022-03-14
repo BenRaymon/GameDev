@@ -16,7 +16,7 @@ public class ImprovedMovement : MonoBehaviour
 	private Animator playerAnimator;
 
 	// DATA CONSTANTS
-	[SerializeField] private PlayerData data; // gets data about the player from scriptableobject
+	private PlayerData data; // gets data about the player from scriptableobject
 
 	// JUMP SETUP
 	private bool isChargedAttack = false;
@@ -37,6 +37,8 @@ public class ImprovedMovement : MonoBehaviour
 
     void Awake()
 	{
+		data = new PlayerData();
+		
 		playerBody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<CapsuleCollider2D>();
         playerStateText = GetComponentInChildren<TextMesh>();
