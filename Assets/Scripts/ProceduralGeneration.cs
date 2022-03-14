@@ -23,9 +23,11 @@ public class ProceduralGeneration : MonoBehaviour
     public RuleTile terrainTile; // Tile to place.
     public Tile backgroundTile; // tile to place.
 
-
     public RuleTile groundTerrain;
     public RuleTile volcanoTerrain;
+
+    private bool firstChunk;
+    [SerializeField] private SpawnPlayer playerSpawner; 
 
     // Variable to keep track of where new platforms should be generated and deleted.
     private int xCoord = 0;
@@ -38,8 +40,9 @@ public class ProceduralGeneration : MonoBehaviour
 
     void Awake()
     {
-        generateMap();
+        firstChunk = false;
         setTerrain("init");
+        generateMap();
     }
 
     public void setTerrain(string platform)
@@ -66,7 +69,7 @@ public class ProceduralGeneration : MonoBehaviour
             terrainMap = populationCheck(terrainMap);
         }
 
-        // paintCells(xCoord);
+        //paintCells(xCoord);
         StartCoroutine(paintCellCoroutine(xCoord));
 
         xCoord += mapSizeRow; // keeps track of the current right-most x-position of the terrain generated.
@@ -76,7 +79,7 @@ public class ProceduralGeneration : MonoBehaviour
     public IEnumerator removeChunkCorotine()
     {
         //Debug.Log("Current delete: " + currentDelete);
-        for(int row = currentDelete; row < currentDelete + 100; row++)
+        for(int row = currentDelete; row < currentDelete + mapSizeRow; row++)
         {
             for(int column = 0; column < mapSizeColumn; column++)
             {
@@ -103,7 +106,7 @@ public class ProceduralGeneration : MonoBehaviour
     //     currentDelete += mapSizeRow; // Keeps track of the next chunk's left-most x-coordinate to delete
     // }
 
-    // // Fills cells with appropriate tile based on whether the cell is alive or dead.
+    // Fills cells with appropriate tile based on whether the cell is alive or dead.
     // private void paintCells(int xCoord)
     // {
     //     for(int row = 0; row < mapSizeRow; row++)
@@ -124,9 +127,14 @@ public class ProceduralGeneration : MonoBehaviour
     //                 terrain.SetTile(new Vector3Int(row + xCoord, column, 0), backgroundTile);
     //         }
     //     }
+
+    //     if(!firstChunk){
+    //         firstChunk = true;
+    //         spawnPlayer();
+    //     }
     // }
 
-    // Coroutine version of paintCells()
+    // // Coroutine version of paintCells()
     private IEnumerator paintCellCoroutine(int xCoord)
     {
         for(int row = 0; row < mapSizeRow; row++)
@@ -148,6 +156,11 @@ public class ProceduralGeneration : MonoBehaviour
                 
                 yield return null; // yields execution of function. Resumes at time returned. Null yields execution until the next update.
             }
+        }
+
+        if(!firstChunk){
+            firstChunk = true;
+            spawnPlayer();
         }
 
         //Debug.Log("Finished painting");
@@ -223,7 +236,7 @@ public class ProceduralGeneration : MonoBehaviour
         return newMap;
     }
         
-    public Vector2 findLocation()
+    public void spawnPlayer()
     {
         Vector2 spawnLocation = new Vector2(0,0);
         for(int row = 0; row < mapSizeRow; row++)
@@ -233,10 +246,10 @@ public class ProceduralGeneration : MonoBehaviour
                 if(terrainMap[row,column] == 1)
                 {
                     spawnLocation = new Vector2(row,column);
-                    return spawnLocation;
+                    playerSpawner.spawnPlayer(spawnLocation);
+                    return;
                 }
             }
         }
-        return spawnLocation;
     }
 }

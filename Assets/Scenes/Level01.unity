@@ -152,7 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f018ce8b6f591174396a04e62954000b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrainSpawner: {fileID: 2137500624}
   playerPrefab: {fileID: 6150967062798347229, guid: d77ad45e4548fea4db9a6f0f0af11478, type: 3}
 --- !u!4 &147295319
 Transform:
@@ -1214,14 +1213,15 @@ MonoBehaviour:
   birthValue: 3
   deathValue: 3
   numRepeats: 5
-  mapSizeRow: 100
-  mapSizeColumn: 10
+  mapSizeRow: 30
+  mapSizeColumn: 7
   terrain: {fileID: 1107485059}
   background: {fileID: 1438201342}
   terrainTile: {fileID: 11400000, guid: e3ca66c949fed724b8ff50d9238ac6ac, type: 2}
   backgroundTile: {fileID: 0}
   groundTerrain: {fileID: 11400000, guid: e3ca66c949fed724b8ff50d9238ac6ac, type: 2}
   volcanoTerrain: {fileID: 11400000, guid: 2618a1ae84d409b438a7d4a3ea29b736, type: 2}
+  playerSpawner: {fileID: 147295318}
   checkpointMarker: {fileID: 1858035427}
 --- !u!4 &2137500626
 Transform:
