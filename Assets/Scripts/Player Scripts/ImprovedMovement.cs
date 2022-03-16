@@ -5,8 +5,9 @@ public class ImprovedMovement : MonoBehaviour
 
 	/*
 
-	NOTE: Player's state management text flips with the player.
-		FIX: Reorganize player container so that the player sprite and text are both children of the container. That way, the sprite can independently flip.
+	BUG: Sometimes, when jumping or queued jumping, the player can become stuck in an infinite falling
+	state. This lasts until the player moves.
+		CAUSE: Unknown
 
 	*/
 
@@ -138,7 +139,7 @@ public class ImprovedMovement : MonoBehaviour
 			queuedJump = true;
 			jumpBufferTimer = PlayerData.JUMP_QUEUE;
 		} 
-		else if(jumpBufferTimer > -1f)
+		else if(jumpBufferTimer > 0f)
 		{
 			jumpBufferTimer -= Time.deltaTime;
 		}
@@ -147,7 +148,7 @@ public class ImprovedMovement : MonoBehaviour
 		// a jump should automatically be executed the next time the player is grounded.
 		if(queuedJump)
 		{
-			if(grounded)
+			if(grounded && jumpBufferTimer > 0f)
 			{
 				isJumping = true;
 				Debug.Log("GROUNDED, DO A JUMP");
