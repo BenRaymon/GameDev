@@ -133,7 +133,7 @@ public class ImprovedMovement : MonoBehaviour
 		}
 
 		#region QUEUED JUMPING
-		if(Input.GetKeyDown(KeyCode.Space) && !queuedJump && playerState == characterState.falling)
+		if(Input.GetKeyDown(KeyCode.Space) && !queuedJump && (playerState == characterState.falling || playerState == characterState.jumping))
 		{
 			queuedJump = true;
 			jumpBufferTimer = PlayerData.JUMP_QUEUE;
@@ -147,9 +147,10 @@ public class ImprovedMovement : MonoBehaviour
 		// a jump should automatically be executed the next time the player is grounded.
 		if(queuedJump)
 		{
-			if(jumpBufferTimer > 0f && grounded)
+			if(grounded)
 			{
 				isJumping = true;
+				Debug.Log("GROUNDED, DO A JUMP");
 			}
 		}
 		#endregion

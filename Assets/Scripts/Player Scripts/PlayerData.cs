@@ -12,6 +12,6 @@ public class PlayerData
 	public const float STOP_POWER = 1.3f;
 	public const float TURN_POWER = 1f;
 	public const float ACCEL_POWER = 1.4f;
-	public const float AIR_DRAG = 0.4f;
+	public const float AIR_DRAG = 0.1f;
 	public const float GROUND_DRAG = 0.4f;
 }
