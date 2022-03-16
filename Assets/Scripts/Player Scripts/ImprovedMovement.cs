@@ -15,9 +15,6 @@ public class ImprovedMovement : MonoBehaviour
 	private CapsuleCollider2D playerCollider;
 	private Animator playerAnimator;
 
-	// DATA CONSTANTS
-	private PlayerData data; // gets data about the player from scriptableobject
-
 	// JUMP SETUP
 	private bool isChargedAttack = false;
 	private float chargeTimer = 0f;
@@ -36,9 +33,7 @@ public class ImprovedMovement : MonoBehaviour
 	private bool queuedJump = false; // used for queueing a jump
 
     void Awake()
-	{
-		data = new PlayerData();
-		
+	{		
 		playerBody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<CapsuleCollider2D>();
         playerStateText = GetComponentInChildren<TextMesh>();
@@ -47,7 +42,7 @@ public class ImprovedMovement : MonoBehaviour
 
 	void Start()
 	{
-		setGravityScale(data.GRAVITY); // sets default gravity
+		setGravityScale(PlayerData.GRAVITY); // sets default gravity
 	}
 
 	void Update()
@@ -61,9 +56,9 @@ public class ImprovedMovement : MonoBehaviour
 		updatePlayerState(); // state machine update
 
 		if (playerBody.velocity.y >= 0)
-            setGravityScale(data.GRAVITY); // sets default gravity when jumping
+            setGravityScale(PlayerData.GRAVITY); // sets default gravity when jumping
 		else
-			setGravityScale(data.GRAVITY * data.FALL_GRAVITY_MULT); // sets higher gravity when falling
+			setGravityScale(PlayerData.GRAVITY * PlayerData.FALL_GRAVITY_MULT); // sets higher gravity when falling
 	}
 
 	void FixedUpdate()
@@ -83,37 +78,37 @@ public class ImprovedMovement : MonoBehaviour
 		// Applies different drag depending on the situation
 		if(playerState == characterState.jumping || playerState == characterState.falling)
 		{
-			Drag(data.AIR_DRAG);
+			Drag(PlayerData.AIR_DRAG);
 		}
 		else
 		{
-			Drag(data.GROUND_DRAG);
+			Drag(PlayerData.GROUND_DRAG);
 		}
 	}
 
 	private void movePlayer()
 	{
-		float targetSpeed = horizontalMovement * data.MOVE_SPEED; // can be 0, -MOVE_SPEED, or +MOVE_SPEED
+		float targetSpeed = horizontalMovement * PlayerData.MOVE_SPEED; // can be 0, -MOVE_SPEED, or +MOVE_SPEED
 
 		// takes the difference to find out how much force should be applied. Larger differences mean larger forces (such as when the player wants to turn)
 		float speedDiff = targetSpeed - playerBody.velocity.x;
 
 		// How fast the player should accelerate. Equivalent to how we accelerate when we start to run.
-		float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? data.RUN_ACCEL : data.RUN_DECELL;
+		float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? PlayerData.RUN_ACCEL : PlayerData.RUN_DECELL;
 
 		// determines the curve at which the player speeds up. Used to make movements feel more natural.
 		float velocityPow;
 		if (Mathf.Abs(targetSpeed) < 0.01f)
 		{
-			velocityPow = data.STOP_POWER;
+			velocityPow = PlayerData.STOP_POWER;
 		}
 		else if (Mathf.Abs(playerBody.velocity.x) > 0 && (Mathf.Sign(targetSpeed) != Mathf.Sign(playerBody.velocity.x)))
 		{
-			velocityPow = data.TURN_POWER;
+			velocityPow = PlayerData.TURN_POWER;
 		}
 		else
 		{
-			velocityPow = data.ACCEL_POWER;
+			velocityPow = PlayerData.ACCEL_POWER;
 		}
 
 		// force to be applied
@@ -130,7 +125,7 @@ public class ImprovedMovement : MonoBehaviour
 		// Coyote time controller
 		if(grounded)
 		{
-			coyoteTimer = data.COYOTE_TIME;
+			coyoteTimer = PlayerData.COYOTE_TIME;
 		}
 		else if(coyoteTimer > -1f)
 		{
@@ -141,7 +136,7 @@ public class ImprovedMovement : MonoBehaviour
 		if(Input.GetKeyDown(KeyCode.Space) && !queuedJump && playerState == characterState.falling)
 		{
 			queuedJump = true;
-			jumpBufferTimer = data.JUMP_QUEUE;
+			jumpBufferTimer = PlayerData.JUMP_QUEUE;
 		} 
 		else if(jumpBufferTimer > -1f)
 		{
@@ -189,11 +184,11 @@ public class ImprovedMovement : MonoBehaviour
 	{
 		if(buffer < 0.5f)
 		{
-            playerBody.AddForce(new Vector2(0f, data.JUMP_FORCE), ForceMode2D.Impulse);
+            playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE), ForceMode2D.Impulse);
         } 
 		else 
 		{
-            playerBody.AddForce(new Vector2(0f, data.JUMP_FORCE * buffer), ForceMode2D.Impulse);
+            playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE * buffer), ForceMode2D.Impulse);
         }
 
 		// reset values
@@ -240,8 +235,8 @@ public class ImprovedMovement : MonoBehaviour
 	// Raycast grounding test for both of the player's "feet"
 	private bool isGrounded()
 	{
-		GameObject isLeftGrounded = collisionDetector(playerCollider.bounds.min, Vector2.down, data.GROUND_BUFFER);
-        GameObject isRightGrounded = collisionDetector(new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.min.y), Vector2.down, data.GROUND_BUFFER);
+		GameObject isLeftGrounded = collisionDetector(playerCollider.bounds.min, Vector2.down, PlayerData.GROUND_BUFFER);
+        GameObject isRightGrounded = collisionDetector(new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.min.y), Vector2.down, PlayerData.GROUND_BUFFER);
 
 		return(isLeftGrounded || isRightGrounded);
 	}

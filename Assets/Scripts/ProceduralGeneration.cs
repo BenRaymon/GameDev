@@ -159,9 +159,10 @@ public class ProceduralGeneration : MonoBehaviour
                 }
                 else
                     terrain.SetTile(new Vector3Int(row + xCoord, column, 0), backgroundTile);
-                
-                yield return null; // yields execution of function. Resumes at time returned. Null yields execution until the next update.
             }
+
+            yield return null; // yields execution of function. Resumes at time returned. Null yields execution until the next update.
+
         }
 
         if(!firstChunk){
