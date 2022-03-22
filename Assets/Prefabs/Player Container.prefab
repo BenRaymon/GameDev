@@ -267,7 +267,7 @@ CapsuleCollider2D:
   m_GameObject: {fileID: 6150967062496731808}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: bc5f64e290ff97c468799278919e4c7e, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -470,7 +470,7 @@ MonoBehaviour:
   m_PivotOffset: {x: 0, y: 0, z: 0}
   m_AmplitudeGain: 0
   m_FrequencyGain: 5
-  mNoiseOffsets: {x: 0, y: 0, z: 0}
+  mNoiseOffsets: {x: -914.3507, y: 315.03125, z: 774.78284}
 --- !u!1 &6150967062798347229
 GameObject:
   m_ObjectHideFlags: 0
