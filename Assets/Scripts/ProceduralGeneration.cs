@@ -55,6 +55,9 @@ public class ProceduralGeneration : MonoBehaviour
             case ("Grass Terrain"):
                 terrainTile = groundTerrain;
                 break;
+            case ("Volcanic Terrain"):
+                terrainTile = volcanoTerrain;
+                break;
             default:
                 terrainTile = volcanoTerrain;
                 break;
@@ -95,49 +98,7 @@ public class ProceduralGeneration : MonoBehaviour
         //Debug.Log("finished removing");
     }
 
-    // public void removeChunk()
-    // {
-    //     Debug.Log("Current delete: " + currentDelete);
-    //     for(int row = currentDelete; row < currentDelete + 100; row++)
-    //     {
-    //         for(int column = 0; column < mapSizeColumn; column++)
-    //         {
-    //             Debug.Log("removing at (" + row + ")");
-    //             terrain.SetTile(new Vector3Int(row, column, 0), null); // removes painted tiles by setting them to null
-    //         }
-    //     }
-    //     currentDelete += mapSizeRow; // Keeps track of the next chunk's left-most x-coordinate to delete
-    // }
-
-    // Fills cells with appropriate tile based on whether the cell is alive or dead.
-    // private void paintCells(int xCoord)
-    // {
-    //     for(int row = 0; row < mapSizeRow; row++)
-    //     {
-    //         // Moves checkpoint marker to the center point of the terrain generated.
-    //         if(row == mapSizeRow/2)
-    //         {
-    //             Debug.Log("Moving marker to (" + (row + xCoord) + "," + checkpointMarker.transform.position.y + ")");
-    //             checkpointMarker.transform.position = new Vector2(row + xCoord, checkpointMarker.transform.position.y);
-    //         }
-    //         for(int column = 0; column < mapSizeColumn; column++)
-    //         {
-    //             if(terrainMap[row,column] == 1)
-    //             {
-    //                 terrain.SetTile(new Vector3Int(row + xCoord, column, 0), terrainTile); // Paints from the left, bottom to top
-    //             }
-    //             else
-    //                 terrain.SetTile(new Vector3Int(row + xCoord, column, 0), backgroundTile);
-    //         }
-    //     }
-
-    //     if(!firstChunk){
-    //         firstChunk = true;
-    //         spawnPlayer();
-    //     }
-    // }
-
-    // // Coroutine version of paintCells()
+    // Coroutine version of paintCells()
     private IEnumerator paintCellCoroutine(int xCoord)
     {
         for(int row = 0; row < mapSizeRow; row++)

@@ -2,10 +2,10 @@ public class TimePeriods {
 
     public string getTimePeriod(float blockCount){
         
-        if(blockCount > 0f && blockCount < 100f)
+        if(blockCount > 0f && blockCount < 300f)
             return "Volcanic Terrain";
         
-        if(blockCount >= 100f && blockCount <= 500f)
+        else if(blockCount > 300f)
             return "Grass Terrain";
         
         return "";

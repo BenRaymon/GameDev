@@ -10,12 +10,12 @@ public class MainMenuController : MonoBehaviour
 
     public void startGameNewGame()
     {
-        SceneManager.LoadScene(newGameLevel);
+        SceneManager.LoadScene("Level01");
     }
 
     public void startGameTestArea()
     {
-        SceneManager.LoadScene("TestingEnvironment");
+        SceneManager.LoadScene("TestEnv");
     }
 
     public void exitGame()

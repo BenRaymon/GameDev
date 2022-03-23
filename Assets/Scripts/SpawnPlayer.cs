@@ -5,9 +5,6 @@ public class SpawnPlayer : MonoBehaviour
 
     [SerializeField] private GameObject playerPrefab;
 
-    void Start()
-    { }
-
     public void spawnPlayer(Vector2 spawnPos)
     {
         spawnPos = new Vector2(spawnPos.x + 5, spawnPos.y + 5);

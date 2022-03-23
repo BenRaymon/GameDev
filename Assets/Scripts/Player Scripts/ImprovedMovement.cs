@@ -17,8 +17,8 @@ public class ImprovedMovement : MonoBehaviour
 	private Animator playerAnimator;
 
 	// JUMP SETUP
-	private bool isChargedAttack = false;
-	private float chargeTimer = 0f;
+	// private bool isChargedAttack = false;
+	// private float chargeTimer = 0f;
 	private float coyoteTimer; // used for jump forgiveness after leaving the ground
 	private float jumpBufferTimer; // used for queueing a jump
 
@@ -57,9 +57,18 @@ public class ImprovedMovement : MonoBehaviour
 		updatePlayerState(); // state machine update
 
 		if (playerBody.velocity.y >= 0)
+		{
             setGravityScale(PlayerData.GRAVITY); // sets default gravity when jumping
+		}
 		else
+		{
 			setGravityScale(PlayerData.GRAVITY * PlayerData.FALL_GRAVITY_MULT); // sets higher gravity when falling
+		}
+
+		if(playerState == characterState.falling)
+		{
+			attack(); // performs collision checks for attacking and damages enemy when colliding.
+		}
 	}
 
 	void FixedUpdate()
@@ -67,14 +76,16 @@ public class ImprovedMovement : MonoBehaviour
 		// checks for jump
 		if(isJumping)
 		{
-			jumpPlayer(chargeTimer);
+			jumpPlayer();
 		}
 
 		// Continuously update player's movement
-		if(chargeTimer < .5f)
-		{
-			movePlayer();
-		}
+		// if(chargeTimer < .5f)
+		// {
+		// 	movePlayer();
+		// }
+
+		movePlayer();
 
 		// Applies different drag depending on the situation
 		if(playerState == characterState.jumping || playerState == characterState.falling)
@@ -151,15 +162,15 @@ public class ImprovedMovement : MonoBehaviour
 			if(grounded && jumpBufferTimer > 0f)
 			{
 				isJumping = true;
-				Debug.Log("GROUNDED, DO A JUMP");
+				// Debug.Log("GROUNDED, DO A JUMP");
 			}
 		}
 		#endregion
 
-		if(Input.GetKey(KeyCode.Space) && grounded)
-		{
-			chargeJump();
-		}
+		// if(Input.GetKey(KeyCode.Space) && grounded)
+		// {
+		// 	chargeJump();
+		// }
 
 		if(Input.GetKeyUp(KeyCode.Space) && (grounded || coyoteTimer > 0f))
 		{
@@ -167,36 +178,38 @@ public class ImprovedMovement : MonoBehaviour
 		}
 	}
 
-	private void chargeJump()
-	{
-		if (chargeTimer < 2f)
-		{
-			chargeTimer += Time.deltaTime;
-		}
+	// private void chargeJump()
+	// {
+	// 	if (chargeTimer < 2f)
+	// 	{
+	// 		chargeTimer += Time.deltaTime;
+	// 	}
 			
-		// forces a jump if held too long (2 seconds)
-		if(chargeTimer > 2f)
-		{
-			isJumping = true;
-			isChargedAttack = true;
-		}
-	}
+	// 	// forces a jump if held too long (2 seconds)
+	// 	if(chargeTimer > 2f)
+	// 	{
+	// 		isJumping = true;
+	// 		isChargedAttack = true;
+	// 	}
+	// }
 
-	private void jumpPlayer(float buffer)
+	private void jumpPlayer()
 	{
-		if(buffer < 0.5f)
-		{
-            playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE), ForceMode2D.Impulse);
-        } 
-		else 
-		{
-            playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE * buffer), ForceMode2D.Impulse);
-        }
+		// if(buffer < 0.5f)
+		// {	
+        // 		playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE), ForceMode2D.Impulse);
+        // } 
+		// else 
+		// {
+        //     playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE * buffer), ForceMode2D.Impulse);
+        // }
+
+		playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE), ForceMode2D.Impulse);
 
 		// reset values
 		isJumping = false;
 		queuedJump = false;
-		chargeTimer = 0f;
+		// chargeTimer = 0f;
 		coyoteTimer = 0f;
 	}
 
@@ -251,6 +264,24 @@ public class ImprovedMovement : MonoBehaviour
         return objectHit;
     }
 
+	// This function checks for a collision with an enemy (using Raycast)
+    // and attacks the enemy if there is a collision
+    private void attack()
+    {
+        //Check for collision on the left side of the player
+        GameObject collisionLeft = collisionDetector(playerCollider.bounds.min, Vector2.down, PlayerData.GROUND_BUFFER);
+        //Check for collision on the right side of the player
+        GameObject collisionRight = collisionDetector(new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.min.y), Vector2.down, PlayerData.GROUND_BUFFER);
+        
+        if(collisionLeft && collisionLeft.tag == "Enemy"){
+            collisionLeft.GetComponent<EnemyController>().takeDamage(100);
+        }
+        else if(collisionRight && collisionRight.tag == "Enemy"){
+            collisionRight.GetComponent<EnemyController>().takeDamage(100);
+        }
+
+    }
+
 	private void updatePlayerState()
     {
         if((playerBody.velocity.x > .1f || playerBody.velocity.x < -.1f) && Mathf.Approximately(playerBody.velocity.y, 0f))
@@ -276,12 +307,12 @@ public class ImprovedMovement : MonoBehaviour
 			playerStateText.text = "falling";
         }
 
-        if(chargeTimer > .5f)
-        {
-            playerState = characterState.chargingJump;
-            playerStateText.text = "charging";
-            //CinemachineCameraShake.Instance.shakeCamera(chargeTimer/10, .1f);
-		}
+        // if(chargeTimer > .5f)
+        // {
+        //     playerState = characterState.chargingJump;
+        //     playerStateText.text = "charging";
+        //     //CinemachineCameraShake.Instance.shakeCamera(chargeTimer/10, .1f);
+		// }
 
         playerAnimator.SetInteger("state", (int)playerState);
     }

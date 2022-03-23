@@ -1,67 +1,40 @@
-using TMPro;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public TMP_Text timer;
-
-    private float TIME_BETWEEN_AGES = 20f;
-    private float timeRemaining = 0f;
-
-    [SerializeField] private GameObject timeDisplay; // used to disable timer display
-    [SerializeField] private GameObject proceduralGenerator;
-
-    private string[] gameAges = {"Volcanic Terrain", "Grass Terrain", "END"};
-    private int count = 0;
-    public static string currentAge;
+    [SerializeField] private GameObject checkpoint;
+    [SerializeField] private GameObject scoreDisplay; // used to disable timer display
+    [SerializeField] private GameObject endDisplay;
+	public TMP_Text scoreText;
+    public TMP_Text finalScore;
+	private int score;
 
     void Awake()
     {
-        timeRemaining = TIME_BETWEEN_AGES;
-
-        currentAge = gameAges[count];
-        count++;
+        scoreDisplay.SetActive(true);
+		score = 0;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void updateScore()
     {
-        if(currentAge != "END")
-        {
-            checkGame();
-        }
-        else
-        {
-            endGame();
-        }
+        score += 50;
+        scoreText.SetText(score.ToString());
     }
 
-    private void checkGame()
+    public void endGame()
     {
-        if(timeRemaining > 0f)
-        {
-            // changes display text
-            float minutes = Mathf.FloorToInt(timeRemaining / 60);
-            float seconds = Mathf.FloorToInt(timeRemaining % 60);
-            timer.SetText(string.Format("{0:00}:{1:00}", minutes, seconds));
+        Time.timeScale = 0f;
+        finalScore.SetText(score.ToString());
 
-            // counts down from the initial value of timeRemaining
-            timeRemaining -= Time.deltaTime;
-        }
-        else
-        {    
-            currentAge = gameAges[count]; // sets current age
-            //Debug.Log("Change age to: " + currentAge);
-
-            proceduralGenerator.GetComponent<ProceduralGeneration>().setTerrain(currentAge);
-            count += 1;
-            timeRemaining = TIME_BETWEEN_AGES;
-        }
+        scoreDisplay.SetActive(false);
+        endDisplay.SetActive(true);
     }
 
-    private void endGame()
+    public void restartLevel()
     {
-        //Debug.Log("WINNER!");
-        //Time.timeScale = 0f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        Time.timeScale = 1f;
     }
 }
