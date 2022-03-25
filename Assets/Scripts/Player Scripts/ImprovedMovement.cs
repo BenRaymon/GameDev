@@ -134,6 +134,15 @@ public class ImprovedMovement : MonoBehaviour
 		bool grounded = isGrounded(); // ground check
 		jumpBufferTimer -= Time.deltaTime;
 
+		if(grounded)
+		{
+			playerBody.sharedMaterial.friction = 0.4f;
+		}
+		else
+		{
+			playerBody.sharedMaterial.friction = 0f;
+		}
+
 		// Coyote time controller
 		if(grounded)
 		{
@@ -284,15 +293,16 @@ public class ImprovedMovement : MonoBehaviour
 
 	private void updatePlayerState()
     {
+		if(Mathf.Approximately(playerBody.velocity.x, 0f) && Mathf.Approximately(playerBody.velocity.y, 0f))
+        {
+            playerState = characterState.idle;
+            playerStateText.text = "idle";
+        }
+
         if((playerBody.velocity.x > .1f || playerBody.velocity.x < -.1f) && Mathf.Approximately(playerBody.velocity.y, 0f))
         {        
             playerState = characterState.running;
             playerStateText.text = "running";
-        }
-        else if(Mathf.Approximately(playerBody.velocity.x, 0f) && Mathf.Approximately(playerBody.velocity.y, 0f))
-        {
-            playerState = characterState.idle;
-            playerStateText.text = "idle";
         }
         
         if(playerBody.velocity.y > .1f)
