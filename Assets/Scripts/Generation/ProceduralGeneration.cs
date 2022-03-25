@@ -36,6 +36,7 @@ public class ProceduralGeneration : MonoBehaviour
 
 
     [SerializeField] private GameObject checkpointMarker;
+    [SerializeField] private GameObject boundsMarker;
 
     private int[,] terrainMap; // 2D Array grid representing the map to be generated.
 
@@ -108,6 +109,7 @@ public class ProceduralGeneration : MonoBehaviour
             {
                 //Debug.Log("Moving marker to (" + (row + xCoord) + "," + checkpointMarker.transform.position.y + ")");
                 checkpointMarker.transform.position = new Vector2(row + xCoord, checkpointMarker.transform.position.y);
+                boundsMarker.transform.position = new Vector2(row + xCoord, boundsMarker.transform.position.y);
             }
 
             setTerrain(timePeriods.getTimePeriod(row+xCoord));
