@@ -5,7 +5,8 @@ public class BoundsManager : MonoBehaviour
     void OnTriggerEnter2D(Collider2D hit)
     {
 		GameObject objectHit = hit?.gameObject;
-		// If the player enters the checkpoint collider, generate the next piece of map
+        
+		// If the player enters the bounds colliders, kill them
 		if(objectHit.tag == "Player")
 		{
 			PlayerHealthController playerReference = objectHit.GetComponent<PlayerHealthController>();

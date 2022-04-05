@@ -28,7 +28,7 @@ public class ImprovedMovement : MonoBehaviour
 	// STATE MANAGEMENT
 	private enum characterState {idle, running, jumping, falling, chargingJump}
 	private characterState playerState;
-	private TextMesh playerStateText;
+	// private TextMesh playerStateText;
 	private bool isFacingRight = true; // used to detect facing direction
 	private bool isJumping = false; // used to move jumping to FixedUpdate()
 	private bool queuedJump = false; // used for queueing a jump
@@ -37,7 +37,7 @@ public class ImprovedMovement : MonoBehaviour
 	{		
 		playerBody = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<CapsuleCollider2D>();
-        playerStateText = GetComponentInChildren<TextMesh>();
+        // playerStateText = GetComponentInChildren<TextMesh>();
         playerAnimator = GetComponent<Animator>();
 	}
 
@@ -248,8 +248,12 @@ public class ImprovedMovement : MonoBehaviour
 	private void Drag(float amount)
 	{
 		Vector2 force = amount * playerBody.velocity.normalized;
+
+		// Only applies drag force if greater than the current player speed. Smaller drag force will be used if the player is moving really slowly.
 		force.x = Mathf.Min(Mathf.Abs(playerBody.velocity.x), Mathf.Abs(force.x)); 
 		force.y = Mathf.Min(Mathf.Abs(playerBody.velocity.y), Mathf.Abs(force.y));
+
+		// Ensures the direction of the force is correct.
 		force.x *= Mathf.Sign(playerBody.velocity.x);
 		force.y *= Mathf.Sign(playerBody.velocity.y);
 
@@ -296,25 +300,25 @@ public class ImprovedMovement : MonoBehaviour
 		if(Mathf.Approximately(playerBody.velocity.x, 0f) && Mathf.Approximately(playerBody.velocity.y, 0f))
         {
             playerState = characterState.idle;
-            playerStateText.text = "idle";
+            // playerStateText.text = "idle";
         }
 
         if((playerBody.velocity.x > .1f || playerBody.velocity.x < -.1f) && Mathf.Approximately(playerBody.velocity.y, 0f))
         {        
             playerState = characterState.running;
-            playerStateText.text = "running";
+            // playerStateText.text = "running";
         }
         
         if(playerBody.velocity.y > .1f)
         {
             playerState = characterState.jumping;
-            playerStateText.text = "jumping";
+            // playerStateText.text = "jumping";
         }
         
         if(playerBody.velocity.y < -.1f)
         {
 			playerState = characterState.falling;
-			playerStateText.text = "falling";
+			// playerStateText.text = "falling";
         }
 
         // if(chargeTimer > .5f)

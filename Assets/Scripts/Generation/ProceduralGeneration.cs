@@ -27,7 +27,7 @@ public class ProceduralGeneration : MonoBehaviour
     public RuleTile volcanoTerrain;
     private TimePeriods timePeriods;
 
-    private bool firstChunk;
+    private bool firstChunk; // used to ensure player spawns only after first chunk has spawned.
     [SerializeField] private SpawnPlayer playerSpawner; 
 
     // Variable to keep track of where new platforms should be generated and deleted.
@@ -49,6 +49,7 @@ public class ProceduralGeneration : MonoBehaviour
         generateMap();
     }
 
+    // Handles the changing of terrain tiles.
     public void setTerrain(string platform)
     {
         switch(platform)
@@ -130,7 +131,7 @@ public class ProceduralGeneration : MonoBehaviour
 
         if(!firstChunk){
             firstChunk = true;
-            spawnPlayer();
+            findSpawnLocation();
         }
 
         //Debug.Log("Finished painting");
@@ -206,7 +207,8 @@ public class ProceduralGeneration : MonoBehaviour
         return newMap;
     }
         
-    public void spawnPlayer()
+    // Finds the first available piece of terrain to spawn the player at.
+    public void findSpawnLocation()
     {
         Vector2 spawnLocation = new Vector2(0,0);
         for(int row = 0; row < mapSizeRow; row++)
@@ -216,7 +218,7 @@ public class ProceduralGeneration : MonoBehaviour
                 if(terrainMap[row,column] == 1)
                 {
                     spawnLocation = new Vector2(row,column);
-                    playerSpawner.spawnPlayer(spawnLocation);
+                    playerSpawner.spawnPlayer(spawnLocation); // spawns player at location
                     return;
                 }
             }
