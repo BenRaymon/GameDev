@@ -210,14 +210,15 @@ public class ProceduralGeneration : MonoBehaviour
     // Finds the first available piece of terrain to spawn the player at.
     public void findSpawnLocation()
     {
-        Vector2 spawnLocation = new Vector2(0,0);
+        Vector3Int cellPos;
         for(int row = 0; row < mapSizeRow; row++)
         {
             for(int column = mapSizeColumn - 1; column >= 0; column--)
             {
                 if(terrainMap[row,column] == 1)
                 {
-                    spawnLocation = new Vector2(row,column);
+                    cellPos = new Vector3Int(row,column,0);
+                    Vector3 spawnLocation = terrain.GetCellCenterWorld(cellPos);
                     playerSpawner.spawnPlayer(spawnLocation); // spawns player at location
                     return;
                 }

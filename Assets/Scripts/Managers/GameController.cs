@@ -16,7 +16,7 @@ public class GameController : MonoBehaviour
     {
         scoreDisplay.SetActive(true);
 		score = 0;
-        highScore.SetText(PlayerPrefs.GetInt("highScore", 0).ToString());
+        highScore.SetText(PlayerPrefs.GetInt("highScore", 0).ToString()); // Uses player perferences to keep track of highscores. Default value set to 0.
     }
 
     public void updateScore()
@@ -29,6 +29,7 @@ public class GameController : MonoBehaviour
     {
         Time.timeScale = 0f;
         finalScore.SetText(score.ToString());
+        // Checks for new highscore and sets it if true
         if(score > PlayerPrefs.GetInt("highScore"))
         {
             PlayerPrefs.SetInt("highScore", score);
