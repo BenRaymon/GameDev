@@ -16,6 +16,9 @@ public class ImprovedMovement : MonoBehaviour
 	private CapsuleCollider2D playerCollider;
 	private Animator playerAnimator;
 
+	private GameObject gameController;
+	private GameController gameControllerScript;
+
 	// JUMP SETUP
 	// private bool isChargedAttack = false;
 	// private float chargeTimer = 0f;
@@ -39,6 +42,10 @@ public class ImprovedMovement : MonoBehaviour
         playerCollider = GetComponent<CapsuleCollider2D>();
         // playerStateText = GetComponentInChildren<TextMesh>();
         playerAnimator = GetComponent<Animator>();
+
+		gameController = GameObject.FindGameObjectWithTag("GameController");
+		gameControllerScript = gameController.GetComponent<GameController>();
+
 	}
 
 	void Start()
@@ -86,6 +93,7 @@ public class ImprovedMovement : MonoBehaviour
 		// }
 
 		movePlayer();
+		gameControllerScript.updateScore(transform.position.x);
 
 		// Applies different drag depending on the situation
 		if(playerState == characterState.jumping || playerState == characterState.falling)
@@ -265,6 +273,15 @@ public class ImprovedMovement : MonoBehaviour
 	{
 		GameObject isLeftGrounded = collisionDetector(playerCollider.bounds.min, Vector2.down, PlayerData.GROUND_BUFFER);
         GameObject isRightGrounded = collisionDetector(new Vector2(playerCollider.bounds.max.x, playerCollider.bounds.min.y), Vector2.down, PlayerData.GROUND_BUFFER);
+
+		// Checks if the ground collider the player hits is the bounds collider. Kills them if so.
+		if((isLeftGrounded && isLeftGrounded.tag == "Bounds") || (isRightGrounded && isRightGrounded.tag == "Bounds"))
+		{
+			Debug.Log("In bounds");
+			PlayerHealthController playerReference = this.GetComponent<PlayerHealthController>();
+            if(playerReference.getHealth() > 0)
+                playerReference.damagePlayer(100);
+		}
 
 		return(isLeftGrounded || isRightGrounded);
 	}

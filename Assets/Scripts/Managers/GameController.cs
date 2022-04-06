@@ -19,9 +19,9 @@ public class GameController : MonoBehaviour
         highScore.SetText(PlayerPrefs.GetInt("highScore", 0).ToString()); // Uses player perferences to keep track of highscores. Default value set to 0.
     }
 
-    public void updateScore()
+    public void updateScore(float xPos)
     {
-        score += 50;
+        score = xPos > score ? (int)xPos : score;
         scoreText.SetText(score.ToString());
     }
 

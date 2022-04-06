@@ -1342,7 +1342,7 @@ GameObject:
   - component: {fileID: 1246204482}
   m_Layer: 0
   m_Name: Bounds Marker
-  m_TagString: Untagged
+  m_TagString: Bounds
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1357,7 +1357,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1803,7 +1803,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   proceduralGenerator: {fileID: 2137500624}
-  gameController: {fileID: 1904294646}
 --- !u!1 &1904294646
 GameObject:
   m_ObjectHideFlags: 0
