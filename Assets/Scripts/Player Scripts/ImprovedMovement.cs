@@ -36,6 +36,8 @@ public class ImprovedMovement : MonoBehaviour
 	private bool isJumping = false; // used to move jumping to FixedUpdate()
 	private bool queuedJump = false; // used for queueing a jump
 
+	public bool canUpdateScore = true;
+
     void Awake()
 	{		
 		playerBody = GetComponent<Rigidbody2D>();
@@ -93,7 +95,11 @@ public class ImprovedMovement : MonoBehaviour
 		// }
 
 		movePlayer();
-		gameControllerScript.updateScore(transform.position.x);
+
+		if(canUpdateScore)
+		{
+			gameControllerScript.updateScore(transform.position.x);
+		}
 
 		// Applies different drag depending on the situation
 		if(playerState == characterState.jumping || playerState == characterState.falling)

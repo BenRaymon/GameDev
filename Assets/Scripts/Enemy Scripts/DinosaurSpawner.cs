@@ -34,8 +34,8 @@ public class DinosaurSpawner : MonoBehaviour
         
         //Start spawning dinos if the time period is Grass Terrain
         //Based on the position of the player
-        if(player && timePeriods.getTimePeriod(player.transform.position.x) == "Grass Terrain"){
-            Debug.Log("ENTERING GRASS TERRAIN");
+        if(player && timePeriods.getTimePeriod(player.transform.position.x) == "Grass Terrain")
+        {
             dinosaurTimer();
         }
     }
