@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestEnv.unity
     guid: 022f830135443724aa5c6e42091dcf0f
+  - enabled: 1
+    path: Assets/Scenes/BossArena.unity
+    guid: 6fbd03b5b942ffb4abc6572ae992c627
   m_configObjects: {}

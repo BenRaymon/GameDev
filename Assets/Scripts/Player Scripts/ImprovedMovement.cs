@@ -8,6 +8,9 @@ public class ImprovedMovement : MonoBehaviour
 	BUG: Sometimes, when jumping or queued jumping, the player can become stuck in an infinite falling
 	state. This lasts until the player moves.
 		CAUSE: Unknown
+	
+	BUG: Player can sometimes get stuck in an infinite running animation with a constantly changing velocity even when not moving
+		CAUSE: Unknown
 
 	*/
 
@@ -20,8 +23,8 @@ public class ImprovedMovement : MonoBehaviour
 	private GameController gameControllerScript;
 
 	// JUMP SETUP
-	// private bool isChargedAttack = false;
-	// private float chargeTimer = 0f;
+	private bool isChargedAttack = false;
+	private float chargeTimer = 0f;
 	private float coyoteTimer; // used for jump forgiveness after leaving the ground
 	private float jumpBufferTimer; // used for queueing a jump
 
@@ -36,8 +39,6 @@ public class ImprovedMovement : MonoBehaviour
 	private bool isJumping = false; // used to move jumping to FixedUpdate()
 	private bool queuedJump = false; // used for queueing a jump
 
-	public bool canUpdateScore = true;
-
     void Awake()
 	{		
 		playerBody = GetComponent<Rigidbody2D>();
@@ -47,7 +48,6 @@ public class ImprovedMovement : MonoBehaviour
 
 		gameController = GameObject.FindGameObjectWithTag("GameController");
 		gameControllerScript = gameController.GetComponent<GameController>();
-
 	}
 
 	void Start()
@@ -88,18 +88,12 @@ public class ImprovedMovement : MonoBehaviour
 			jumpPlayer();
 		}
 
-		// Continuously update player's movement
-		// if(chargeTimer < .5f)
-		// {
-		// 	movePlayer();
-		// }
-
-		movePlayer();
-
-		if(canUpdateScore)
+		if(chargeTimer < .5f)
 		{
-			gameControllerScript.updateScore(transform.position.x);
+			movePlayer();
 		}
+
+		gameControllerScript.updateScore(transform.position.x);
 
 		// Applies different drag depending on the situation
 		if(playerState == characterState.jumping || playerState == characterState.falling)
@@ -185,15 +179,14 @@ public class ImprovedMovement : MonoBehaviour
 			if(grounded && jumpBufferTimer > 0f)
 			{
 				isJumping = true;
-				// Debug.Log("GROUNDED, DO A JUMP");
 			}
 		}
 		#endregion
 
-		// if(Input.GetKey(KeyCode.Space) && grounded)
-		// {
-		// 	chargeJump();
-		// }
+		if(Input.GetKey(KeyCode.Space) && grounded)
+		{
+			chargeJump();
+		}
 
 		if(Input.GetKeyUp(KeyCode.Space) && (grounded || coyoteTimer > 0f))
 		{
@@ -201,38 +194,36 @@ public class ImprovedMovement : MonoBehaviour
 		}
 	}
 
-	// private void chargeJump()
-	// {
-	// 	if (chargeTimer < 2f)
-	// 	{
-	// 		chargeTimer += Time.deltaTime;
-	// 	}
+	private void chargeJump()
+	{
+		if (chargeTimer < 2f)
+		{
+			chargeTimer += Time.deltaTime;
+		}
 			
-	// 	// forces a jump if held too long (2 seconds)
-	// 	if(chargeTimer > 2f)
-	// 	{
-	// 		isJumping = true;
-	// 		isChargedAttack = true;
-	// 	}
-	// }
+		// forces a jump if held too long (2 seconds)
+		if(chargeTimer > 2f)
+		{
+			isJumping = true;
+			isChargedAttack = true;
+		}
+	}
 
 	private void jumpPlayer()
 	{
-		// if(buffer < 0.5f)
-		// {	
-        // 		playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE), ForceMode2D.Impulse);
-        // } 
-		// else 
-		// {
-        //     playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE * buffer), ForceMode2D.Impulse);
-        // }
-
-		playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE), ForceMode2D.Impulse);
+		if(chargeTimer < 0.5f)
+		{	
+        	playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE), ForceMode2D.Impulse);
+        } 
+		else 
+		{
+            playerBody.AddForce(new Vector2(0f, PlayerData.JUMP_FORCE * chargeTimer), ForceMode2D.Impulse);
+        }
 
 		// reset values
 		isJumping = false;
 		queuedJump = false;
-		// chargeTimer = 0f;
+		chargeTimer = 0f;
 		coyoteTimer = 0f;
 	}
 
@@ -283,7 +274,6 @@ public class ImprovedMovement : MonoBehaviour
 		// Checks if the ground collider the player hits is the bounds collider. Kills them if so.
 		if((isLeftGrounded && isLeftGrounded.tag == "Bounds") || (isRightGrounded && isRightGrounded.tag == "Bounds"))
 		{
-			Debug.Log("In bounds");
 			PlayerHealthController playerReference = this.GetComponent<PlayerHealthController>();
             if(playerReference.getHealth() > 0)
                 playerReference.damagePlayer(100);
@@ -344,12 +334,12 @@ public class ImprovedMovement : MonoBehaviour
 			// playerStateText.text = "falling";
         }
 
-        // if(chargeTimer > .5f)
-        // {
-        //     playerState = characterState.chargingJump;
-        //     playerStateText.text = "charging";
-        //     //CinemachineCameraShake.Instance.shakeCamera(chargeTimer/10, .1f);
-		// }
+        if(chargeTimer > .5f)
+        {
+            playerState = characterState.chargingJump;
+            // playerStateText.text = "charging";
+            CinemachineCameraShake.Instance.shakeCamera(chargeTimer/10, .1f);
+		}
 
         playerAnimator.SetInteger("state", (int)playerState);
     }

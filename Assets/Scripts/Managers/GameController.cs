@@ -4,13 +4,13 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private GameObject checkpoint;
     [SerializeField] private GameObject scoreDisplay; // used to disable timer display
     [SerializeField] private GameObject endDisplay;
 	public TMP_Text scoreText;
     public TMP_Text finalScore;
     public TMP_Text highScore;
 	private int score;
+    public bool canUpdateScore = false;
 
     void Awake()
     {
@@ -23,6 +23,11 @@ public class GameController : MonoBehaviour
     {
         score = xPos > score ? (int)xPos : score;
         scoreText.SetText(score.ToString());
+    }
+
+    public void toggleScoring()
+    {
+        canUpdateScore = !canUpdateScore;
     }
 
     public void endGame()

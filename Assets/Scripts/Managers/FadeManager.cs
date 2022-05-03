@@ -1,15 +1,17 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FadeManager : MonoBehaviour
 {
 	private Animator fadeAnimator;
 	private GameObject player;
-
-	[SerializeField] private GameObject bossTeleporter;
+	private GameObject gameController;
+	private GameObject generator;
 
     void Awake()
 	{
-		fadeAnimator = GetComponent<Animator>();		
+		fadeAnimator = GetComponent<Animator>();
+		gameController = GameObject.FindGameObjectWithTag("GameController");
 	}
 	
 	void Update()
@@ -28,25 +30,22 @@ public class FadeManager : MonoBehaviour
 	public void fadeOut()
 	{
 		fadeAnimator.SetInteger("Fade", 0);
-		player.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-		player.GetComponent<ImprovedMovement>().canUpdateScore = false;
+		PlayerPrefs.SetInt("xCoord", (int)player.transform.position.x);
 	}
 
 	public void fadeIn()
-	{
-		//player = GameObject.FindGameObjectWithTag("Player");
+	{		
 		fadeAnimator.SetInteger("Fade", 1);
 	}
 
 	public void onFadeOutComplete()
 	{
-		Vector3 teleportPos = bossTeleporter.transform.position;
-		player.transform.position = teleportPos;
+		SceneManager.LoadScene(3);
 		fadeIn();
 	}
 
 	public void onFadeInComplete()
 	{
-		player.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+		gameController.GetComponent<GameController>().toggleScoring();		
 	}
 }

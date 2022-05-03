@@ -44,6 +44,10 @@ public class ProceduralGeneration : MonoBehaviour
     {
         timePeriods = new TimePeriods();
 
+        PlayerPrefs.SetInt("xCoord", 0);
+        xCoord = PlayerPrefs.GetInt("xCoord", 0);
+        Debug.Log(xCoord);
+
         firstChunk = false;
         setTerrain("init");
         generateMap();

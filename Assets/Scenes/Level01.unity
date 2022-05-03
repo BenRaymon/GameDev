@@ -451,7 +451,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b9f5d16bd331a44faf160a31cbf8ba3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bossTeleporter: {fileID: 738107632}
 --- !u!1 &306604737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1856,7 +1855,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1246204481}
   - component: {fileID: 1246204480}
-  - component: {fileID: 1246204482}
   m_Layer: 0
   m_Name: Bounds Marker
   m_TagString: Bounds
@@ -1904,18 +1902,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1246204482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246204479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93812da152970294093bf1dfe1727d20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1438201339
 GameObject:
   m_ObjectHideFlags: 0
@@ -2385,7 +2371,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0399ce8a4550db4281a9f73e8749051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  checkpoint: {fileID: 2019010361935766487, guid: 105bc759feea24442818282a7d07bde3, type: 3}
   scoreDisplay: {fileID: 1487327148}
   endDisplay: {fileID: 32976746}
   scoreText: {fileID: 799718554}
