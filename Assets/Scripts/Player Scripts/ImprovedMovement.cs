@@ -59,7 +59,8 @@ public class ImprovedMovement : MonoBehaviour
 	{
 		horizontalMovement = Input.GetAxisRaw("Horizontal");
 
-		checkFacingDirection(horizontalMovement > 0f); // checks facing direction based on input
+		if(horizontalMovement != 0f)
+			checkFacingDirection(horizontalMovement > 0f); // checks facing direction based on input
 
 		checkForJump(); // checks keys for jump while also handling coyote time and jump queueing
 
@@ -104,6 +105,11 @@ public class ImprovedMovement : MonoBehaviour
 		{
 			Drag(PlayerData.GROUND_DRAG);
 		}
+	}
+
+	public string getFacingDirection()
+	{
+		return isFacingRight ? "right" : "left";
 	}
 
 	private void movePlayer()

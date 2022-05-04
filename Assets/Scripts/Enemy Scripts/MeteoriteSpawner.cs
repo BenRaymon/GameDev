@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /**
 
@@ -33,8 +34,13 @@ public class MeteoriteSpawner : MonoBehaviour
         
         //Start spawning meteors if the time period is Volcanic Terrain
         //Based on the position of the player
-        if(player && timePeriods.getTimePeriod(player.transform.position.x) == "Volcanic Terrain"){
+        if(player && timePeriods.getTimePeriod(player.transform.position.x) == "Volcanic Terrain" && SceneManager.GetActiveScene().name == "Level01"){
             meteoriteTimer();
+        }
+
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            spawnPlayerMeteorite();
         }
     }
 
@@ -54,5 +60,16 @@ public class MeteoriteSpawner : MonoBehaviour
     {
         GameObject temporaryMeteorite = Instantiate(meteoritePrefab, player.transform.position + new Vector3(8, 8, 0), player.transform.rotation) as GameObject;
         temporaryMeteorite.GetComponent<MeteoriteController>().addSpeed(new Vector2(Random.Range(-5f, 5f), Random.Range(-1f, -5f)));
+    }
+
+    public void spawnPlayerMeteorite()
+    {
+        // if facing left VELOCITY is negative, else VELOCITY positive
+        string direction = player.GetComponent<ImprovedMovement>().getFacingDirection();
+        float multiplier = direction == "left" ? -1f : 1f;
+
+        GameObject temporaryMeteorite = Instantiate(meteoritePrefab, player.transform.position + new Vector3(2 * multiplier, 0, 0), player.transform.rotation) as GameObject;
+        temporaryMeteorite.GetComponent<MeteoriteController>().addSpeed(new Vector2(5f * multiplier, 0f));
+        temporaryMeteorite.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY;
     }
 }
