@@ -2313,6 +2313,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   proceduralGenerator: {fileID: 2137500624}
+  fade: {fileID: 158493822}
 --- !u!1 &1904294646
 GameObject:
   m_ObjectHideFlags: 0
