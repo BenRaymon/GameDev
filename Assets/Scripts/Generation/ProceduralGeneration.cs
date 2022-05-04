@@ -44,13 +44,28 @@ public class ProceduralGeneration : MonoBehaviour
     {
         timePeriods = new TimePeriods();
 
-        PlayerPrefs.SetInt("xCoord", 0);
         xCoord = PlayerPrefs.GetInt("xCoord", 0);
-        Debug.Log(xCoord);
+        Debug.Log("Spawning at xCoord: " + xCoord);
 
         firstChunk = false;
         setTerrain("init");
         generateMap();
+    }
+
+    void Update()
+    {
+        // for debugging, resets saved xCoord
+        if(Input.GetMouseButtonDown(2))
+        {
+            Debug.Log("Current xCoord: " + xCoord);
+            Debug.Log("Resetting");
+            PlayerPrefs.SetInt("xCoord", 0);
+        }
+    }
+
+    public int getXCoord()
+    {
+        return xCoord;
     }
 
     // Handles the changing of terrain tiles.
@@ -221,7 +236,7 @@ public class ProceduralGeneration : MonoBehaviour
             {
                 if(terrainMap[row,column] == 1)
                 {
-                    cellPos = new Vector3Int(row,column,0);
+                    cellPos = new Vector3Int(row + (xCoord - mapSizeRow),column,0);
                     Vector3 spawnLocation = terrain.GetCellCenterWorld(cellPos);
                     playerSpawner.spawnPlayer(spawnLocation); // spawns player at location
                     return;

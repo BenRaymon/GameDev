@@ -93,7 +93,7 @@ public class ImprovedMovement : MonoBehaviour
 			movePlayer();
 		}
 
-		gameControllerScript.updateScore(transform.position.x);
+		gameControllerScript.checkScore(transform.position.x);
 
 		// Applies different drag depending on the situation
 		if(playerState == characterState.jumping || playerState == characterState.falling)

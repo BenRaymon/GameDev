@@ -50,6 +50,7 @@ public class PauseMenu : MonoBehaviour
 
     public void quitGame()
     {
+        PlayerPrefs.SetInt("xCoord", 0);
         Application.Quit();
     }
 }

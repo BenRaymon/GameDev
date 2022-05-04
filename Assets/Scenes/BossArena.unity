@@ -6223,7 +6223,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1824334610
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6733,6 +6733,7 @@ MonoBehaviour:
   scoreText: {fileID: 1866138885}
   finalScore: {fileID: 868909559}
   highScore: {fileID: 1877561847}
+  canUpdateScore: 0
 --- !u!4 &2121478973
 Transform:
   m_ObjectHideFlags: 0

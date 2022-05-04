@@ -33,10 +33,12 @@ public class PlayerHealthController : MonoBehaviour
     {
         playerAnimator.SetTrigger("death");
         rb2d.bodyType = RigidbodyType2D.Static;
+        PlayerPrefs.SetInt("xCoord", 0);
     }
 
     private void restartLevel()
     {
+        PlayerPrefs.SetInt("xCoord", 0);
         gameController.GetComponent<GameController>().endGame();
     }
 }

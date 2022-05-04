@@ -7,6 +7,7 @@ public class FadeManager : MonoBehaviour
 	private GameObject player;
 	private GameObject gameController;
 	private GameObject generator;
+	[SerializeField] private GameObject proceduralGenerator;
 
     void Awake()
 	{
@@ -30,7 +31,12 @@ public class FadeManager : MonoBehaviour
 	public void fadeOut()
 	{
 		fadeAnimator.SetInteger("Fade", 0);
-		PlayerPrefs.SetInt("xCoord", (int)player.transform.position.x);
+		if(SceneManager.GetActiveScene().name == "Level01")
+		{
+			int newCoord = proceduralGenerator.GetComponent<ProceduralGeneration>().getXCoord();
+			PlayerPrefs.SetInt("xCoord", newCoord);
+			Debug.Log("Saving xCoord: " + newCoord);
+		}
 	}
 
 	public void fadeIn()
@@ -40,8 +46,14 @@ public class FadeManager : MonoBehaviour
 
 	public void onFadeOutComplete()
 	{
-		SceneManager.LoadScene(3);
-		fadeIn();
+		if(SceneManager.GetActiveScene().name == "BossArena")
+		{
+			SceneManager.LoadScene("Level01");
+		}
+		else
+		{
+			SceneManager.LoadScene(3);
+		}
 	}
 
 	public void onFadeInComplete()

@@ -10,6 +10,16 @@ public class CheckpointManager : MonoBehaviour
 
 	private int counter = -1; // set to -1 so that the first platform on which the player hits the checkpoint is not deleted.
 	[SerializeField] private GameObject proceduralGenerator;
+	[SerializeField] private GameObject fade;
+
+	private void checkCounter()
+	{
+		if(counter == 7)
+		{
+			Debug.Log("Counter is 7, switching to boss fight!");
+			fade.GetComponent<FadeManager>().fadeOut();
+		}
+	}
 
 	// Checks for any collisions
 	void OnTriggerEnter2D(Collider2D hit)
@@ -19,6 +29,8 @@ public class CheckpointManager : MonoBehaviour
 		{
 			proceduralGenerator.GetComponent<ProceduralGeneration>().generateMap();
 			counter++;
+
+			checkCounter();
 		}
 
 		// Deletes previous platforms except for the first time the player hits the checkpoint collider.
